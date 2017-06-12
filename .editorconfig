@@ -1,0 +1,25 @@
+# EditorConfig: See http://editorconfig.org/
+
+# root = true   # not set, because maybe it's not true.
+
+[*]
+charset = utf-8
+insert_final_newline = false  # Sorry, Tommy.
+
+# I'm pretty much a ts=4 sw=4 noet guy.
+indent_size = 4
+indent_style = tab
+
+# But python ... well, you've gotta use spaces.
+[*.{py,cpy}]
+indent_style = space
+
+# YAML files ... two spaces.
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Bash scripts, also two spaces
+[*.{sh}]
+indent_style = space
+indent_size = 2
