@@ -7,7 +7,6 @@ from __future__ import print_function
 from __future__ import division
 from __future__ import unicode_literals
 
-import json
 import requests
 
 from utilities import join_uri_paths
@@ -37,6 +36,11 @@ Example:
   post = api.query("/posts", body={"userId":123, "title":"Test Post",
           "body":"This is a test, just a test."})
 
+For some interfaces you will need to use 'put' rather than 'post', in which
+case there is an "update" rather than "query" member:
+
+  post = api.update("/posts", body={"userId":123, "title":"Test Post"})
+
 
 You can use "prefix" to create API-zoned objects:
 
@@ -55,6 +59,11 @@ class RESTful(object):
 
     DEFAULT_PREFIX   = "/"
     DEFAULT_PROTOCOL = "http"
+
+    FETCH  = requests.get
+    CREATE = requests.post
+    UPDATE = requests.put
+
 
     ###########################################################################
     # Constructor.
@@ -79,26 +88,14 @@ class RESTful(object):
 
 
     ###########################################################################
-    # Make an actual query.
+    # Helper to translate sub-paths into complete paths with a protocol.
     #
-    def query(self, query_path=None, body=None):
+    def _get_request_path(self, query_path):
         """
-        Send a query within the API using GET or, if the optional body is
-        provided, via POST. The body can either be a list or dictionary to be
-        sent as JSON, anything else will be sent as-is as the 'data' field of
-        the post.
+        Internal helper than translates a query path into a request path.
 
-        `prefix` is automatically added unless the query_path includes it,
-        e.g., given r = RESTful("host", prefix="/api/")
-            r.query("/foo")
-            r.query("/api/foo")
-        are equivalent. Use "./" to avoid this, e.g.
-            r.query("./api/foo") => /api/api/foo
-
-        \param   query_path     The prefix-relative path to the query,
-        \param   body           a: dict{ parameters },
-                                b: string representation of data to be sent,
-        \return                 JSON representation of the response,
+        \param   query_path       The path the user is providing,
+        \return                   The complete path to request.
         """
 
         if not query_path:
@@ -119,18 +116,66 @@ class RESTful(object):
             request_path = join_uri_paths(self._prefix, query_path)
 
         # Introduce the protocol and address.
-        request_path = join_uri_paths(self._base_url, request_path)
+        return join_uri_paths(self._base_url, request_path)
+
+
+    ###########################################################################
+    # Make an actual query.
+    #
+    def query(self, query_path=None, body=None):
+        """
+        Send a query within the API using GET or, if the optional body is
+        provided, via POST. The body can either be a list or dictionary to be
+        sent as JSON, anything else will be sent as-is as the 'data' field of
+        the post.
+
+        If you are using an API which requests you to use "PUT" you should use
+        the 'update' method instead.
+
+        `prefix` is automatically added unless the query_path includes it,
+        e.g., given r = RESTful("host", prefix="/api/")
+            r.query("/foo")
+            r.query("/api/foo")
+        are equivalent. Use "./" to avoid this, e.g.
+            r.query("./api/foo") => /api/api/foo
+
+        \param   query_path     The prefix-relative path to the query,
+        \param   body           a: dict{ parameters },
+                                b: string representation of data to be sent,
+        \return                 JSON representation of the response,
+        """
+
+        # Translate the query path to a request
+        request = self._get_request_path(query_path)
 
         # If body is None, just use get:
         if body is None:
-            response = requests.get(request_path)
+            response = self.FETCH(request)
 
         # If we're given a dictionary or list, automatically convert it to a
         # JSON representation.
         elif isinstance(body, (dict, list, tuple)):
-            response = requests.post(request_path, json=body)
+            response = self.CREATE(request, json=body)
 
         else:
-            response = requests.post(request_path, data=body)
+            response = self.CREATE(request, data=body)
+
+        return response.json()
+
+
+    ###########################################################################
+    # Perform a "put" operation to update existing data.
+    #
+    def update(self, query_path=None, body=None):
+        """
+        Like 'query' but uses 'put' as the transport method.
+        """
+
+        request = self._get_request_path(query_path)
+
+        if not body or isinstance(body, (dict, list, tuple)):
+            response = self.UPDATE(request, json=body)
+        else:
+            response = self.UPDATE(request, data=body)
 
         return response.json()
