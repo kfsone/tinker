@@ -1,0 +1,3 @@
+I used Lua as the server-side embedded scripting language for WWII Online and the World of Warcraft servers share lua code between client and server, so it showed up a lot in my WoW server performance work. I also wrote some WoW addons ... if only I had committed "Profiteer" to vcs...
+
+That said, I haven't had much reason to use it of late, and it lacks the broad library support that Python has. I still tinker with Lua routinely, mostly because its syntax reminds me of the heady days of Amiga Arexx.
