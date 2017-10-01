@@ -435,6 +435,8 @@ def parse_arguments(arglist):
                         help='Absolute directories to ignore.')
     parser.add_argument('paths', nargs='+', type=str, default=[],
                         help='Specify which path to search.')
+    parser.add_argument('--output', '-O', type=str,
+                        help='Output to this file (as utf-8)')
 
     return parser.parse_args(arglist)
 
@@ -449,6 +451,13 @@ if __name__ == "__main__":
         logLevel = logging.INFO if args.verbose == 1 else logging.DEBUG
     logging.basicConfig(level=logLevel, stream=sys.stderr)
 
+    if args.output:
+        encoding = "utf-8"
+        outf = open(args.output, "w", encoding=encoding)
+    else:
+        outf = sys.stdout
+        encoding = outf.encoding
+
     if args.json:
         import json
 
@@ -461,13 +470,20 @@ if __name__ == "__main__":
     if not matches:
         if args.verbose:
             logging.info("No duplicates found.")
-    else:
-        if args.json:
-            print(json.dumps(matches))
-        else:
-            maxlen = max(len("{:,}".format(m[0])) for m in matches)
-            for size, files in matches:
-                logging.debug("sz:%s fls:%s" % (size, files))
-                fls = b','.join((fn.encode(errors='replace').decode(
-                                errors='replace') for fn in files))
-                print("{sz:{ml},} {fls}".format(ml=maxlen, sz=size, fls=fls))
+        sys.exit(0)
+
+    if args.json:
+        print(json.dumps(matches), file=outf)
+        sys.exit(0)
+
+    maxlen = max(len("{:,}".format(m[0])) for m in matches)
+    for size, files in matches:
+        if args.verbose > 2:
+            logging.debug("sz:%s fls:%s" % (size, files))
+        # windows console :(
+        if sys.platform == 'win32' or args.output:
+            files = (fn.encode(encoding, errors='replace') for fn in files)
+            files = (fn.decode(errors='replace') for fn in files)
+        files = ','.join(files)
+        print("{sz:{ml},} {fls}".format(ml=maxlen, sz=size, fls=files),
+              file=outf)
