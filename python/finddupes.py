@@ -99,10 +99,14 @@ class Candidate(object):
 #
 if sys.platform == "win32":
     def same_top_level(lhs, rhs):
+        """ test if two files are on the same drive. """
         return os.path.splitdrive(lhs) == os.path.splitdrive(rhs)
 else:
     def same_top_level(lhs, rhs):
-        lhs, rhs = lhs.partition(os.path.sep)[0], rhs.partition(os.path.sep)[0]
+        """ test if two files are in the same top-level directory. """
+        if lhs.rfind(os.path.sep) == 0 and rhs.rfind(os.path.sep) == 0:
+            return True
+        lhs, rhs = lhs.partition(os.path.sep)[1], rhs.partition(os.path.sep)[1]
         return lhs == rhs
 
 
@@ -376,7 +380,6 @@ class Catalog(object):
 
         :return: tuple(size_in_bytes, list(filepaths))
         """
-
         raw_matches, hash_matches = 0, 0
 
         for size_list in self._get_candidates():
@@ -394,11 +397,9 @@ class Catalog(object):
 
             # Larger files we're going to have to re-read and do a bytewise
             # comparison.
-
             hash_matches += len(size_list)
 
             matched, groups = set(), 0
-
             for match_list in self._compare_files(size_list):
                 yield size, list(info.path for info in match_list)
                 groups += 1
@@ -423,8 +424,8 @@ def parse_arguments(arglist):
                         help='Only consider files <= this size.')
     parser.add_argument('--threads', '-t', type=int,
                         help='Specify the number of threads.')
-    parser.add_argument('--ignore-dirs', '-I',  type=str, dest='ignore_dirs',
-                        default='[]', action='append',
+    parser.add_argument('--ignore-dirs', '-I', type=str, dest='ignore_dirs',
+                        default=[], action='append',
                         help='Absolute directories to ignore.')
     parser.add_argument('paths', nargs='+', type=str, default=[],
                         help='Specify which path to search.')
