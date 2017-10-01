@@ -420,7 +420,7 @@ class Catalog(object):
 def parse_arguments(arglist):
 
     parser = argparse.ArgumentParser('finddupes')
-    parser.add_argument('--verbose', '-v', action='count',
+    parser.add_argument('--verbose', '-v', action='count', default=0,
                         help='Increase output verbosity')
     parser.add_argument('--json', action='store_true',
                         help='Output in json format')
@@ -468,6 +468,6 @@ if __name__ == "__main__":
             maxlen = max(len("{:,}".format(m[0])) for m in matches)
             for size, files in matches:
                 logging.debug("sz:%s fls:%s" % (size, files))
-                fls = ','.join((fn.encode(errors='replace').decode()
-                                for fn in files))
+                fls = b','.join((fn.encode(errors='replace').decode(
+                                errors='replace') for fn in files))
                 print("{sz:{ml},} {fls}".format(ml=maxlen, sz=size, fls=fls))
