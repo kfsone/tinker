@@ -138,7 +138,7 @@ class Catalog(object):
     """
 
     def __init__(self, folders, min_size=None, max_size=None,
-                 ignore_folders=None,
+                 ignore_folders=None, verbosity=0,
                  threads=None, logger=logging):
         """
         Constructs the catalog but does not fetch any files yet.
@@ -156,6 +156,7 @@ class Catalog(object):
         self.folders        = folders
         self.min_size       = min_size or 1
         self.max_size       = max_size or sys.maxsize
+        self.verbosity      = verbosity if verbosity and verbosity > 0 else 0
         self.ignore_folders = set(
             os.path.abspath(os.path.normpath(p)) for p in ignore_folders or []
         )
@@ -185,15 +186,20 @@ class Catalog(object):
             num_files = 0
             for path, dirs, files in os.walk(folder):
                 if path in self.ignore_folders:
+                    if self.verbosity:
+                        self.logger.info('Ignoring %s' % path)
                     dirs[:] = []
                     continue
+                if self.verbosity > 1:
+                    self.logger.debug('Path %s' % path)
 
                 base = path + os.path.sep
                 yield from map(base.__add__, files)
                 self.files_observed += len(files)
                 num_files += len(files)
 
-            self.logger.debug("=> %s: %d files" % (folder, num_files))
+            if self.verbosity:
+                self.logger.debug("=> %s: %d files" % (folder, num_files))
 
         if not num_folders:
             self.logger.error("No folders found to scan.")
@@ -448,7 +454,7 @@ if __name__ == "__main__":
 
     paths = args.paths or ['.']
     cat = Catalog(folders=paths, min_size=args.ge, max_size=args.le,
-                  ignore_folders=args.ignore_dirs,
+                  ignore_folders=args.ignore_dirs, verbosity=args.verbose-1,
                   threads=args.threads, logger=logging)
     matches = list(cat.matching_files())
 
