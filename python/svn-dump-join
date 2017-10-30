@@ -1,0 +1,203 @@
+#! /usr/bin/python
+# Copyright (C) Oliver 'kfsone' Smith, 2017
+
+
+import argparse
+import logging
+from io import SEEK_CUR, SEEK_END
+import os
+from os import path as Path
+import sys
+
+
+def clean_path(path):
+
+    return Path.abspath(Path.normpath(Path.expandvars(Path.expanduser(path))))
+
+
+def parse_args(argv):
+
+    parser = argparse.ArgumentParser("join svn dumps")
+    parser.add_argument('--dry-run', '-n', help="Dry run (don't write any data to base", action="store_true")
+    parser.add_argument("--verbose", "-v", help="Verbose mode", action="count", default=0)
+    parser.add_argument("base", help="Base import file")
+    parser.add_argument("continuations", nargs="+", help="Files to add to the import")
+
+    args = parser.parse_args(argv)
+    args.base = clean_path(args.base)
+    args.continuations = [clean_path(p) for p in args.continuations]
+
+    return args
+
+
+def get_first_revn(filename, fh):
+    """
+        Confirm that fh looks like an svn dump and return the first revision.
+
+        \param  filename    Name of the file being read
+        \param  fh          Open handle to the file
+    """
+    line_no = 0
+    for exp in ("SVN-fs-dump-format-version:", "", "UUID:", "", "Revision-number:"):
+        line_no += 1
+        last_line_pos = fh.tell()
+        line = fh.readline().strip()
+        logging.debug('%s:%d: gfr: %s', filename, line_no, line)
+        # If expect is not empty, the line should start with it.
+        # If expect is empty, the line should be too.
+        if (exp and not line.startswith(exp)) or (line and not exp):
+            err = "%s:%d: Not recognized as an SVN dump: '%s'"
+            raise RuntimeError(err % (filename, line_no, line))
+
+    # Put the line back into the buffer for consumption.
+    fh.seek(last_line_pos)
+
+    # The last line should be a revision number:
+    _, _, revn = line.partition(': ')
+    return int(revn)
+
+
+def consume_revisions(filename, fh):
+
+    logging.debug('%s: consume revisions', filename)
+    revn, start_pos, length, end_pos = None, fh.tell(), 0, None
+    while True:
+        line = fh.readline()
+        if not line: break
+        line = line.strip()
+        logging.debug("%s: consume: %s", filename, line)
+        if not line:
+            # We've reached a blank line.
+            if length:
+                # We've just finished parsing a header block with a
+                # length value, so now we skip that much data.
+                logging.debug('skipping %d data bytes', length)
+                fh.seek(length, SEEK_CUR)
+                length = None
+                assert not fh.readline().strip()
+
+            # We should now be at the start of a new block or the end of
+            # the file, or possibly another empty blank line (I'm not clear
+            # on when/why there seem to be extra blanks)
+            end_pos = fh.tell()
+
+        else:
+            # The only non-blank lines should be header lines.
+
+            # split into fields
+            header, _, value = line.partition(': ')
+
+            if header.endswith('-length'):
+                # find the longest (outer) length description
+                value = int(value)
+                if value > length:
+                    logging.debug("%s:r%d: block length? %d", filename, revn, value)
+                    length = value
+
+            elif header == "Node-path":
+                logging.debug("%s:r%d: -- node %s", filename, revn, value)
+
+            elif header == 'Revision-number':
+                if revn:
+                    logging.debug('%s:r%d: ending previous block', filename, revn)
+                    assert revn
+                    assert start_pos
+                    assert end_pos
+                    # If we have been tracking end_pos, that means we were
+                    # consuming blank lines and are starting a new header.
+                    # yield the span of the previous block.
+                    save_pos = fh.tell()
+                    yield revn, start_pos, end_pos
+                    fh.seek(save_pos)
+                    start_pos, end_pos = end_pos, None
+
+                # remember the revision number
+                value = int(value)
+                logging.info('%s: revision: r%d', filename, value)
+                revn = value
+
+    logging.debug("%s: END OF FILE", filename)
+    if revn and end_pos and start_pos < end_pos:
+        logging.debug("%s:r%d: finish block %d-%d", filename, revn, start_pos, end_pos)
+        yield revn, start_pos, end_pos
+
+
+def get_last_revn(filename, fh, start_revn):
+    for revn, start_pos, end_pos in consume_revisions(filename, fh):
+        last_revn = revn
+    return last_revn
+
+
+def append_dump(lhfilename, lh, lhs_revn, dumpfile, dry_run=False):
+
+    logging.debug("Appending %s to %s after revn %d",
+                  dumpfile, lhfilename, lhs_revn)
+
+    lh.seek(0, SEEK_END)
+    rh = open(dumpfile, 'rb')
+    try:
+        rhs_revn = get_first_revn(dumpfile, rh)
+        logging.debug("%s: starts at r%d", dumpfile, rhs_revn)
+        if rhs_revn != lhs_revn + 1:
+            err = "%s: Dump not contiguous: Starts at r%d rather than r%d"
+            raise RuntimeError(err % (dumpfile, rhs_revn, lhs_revn + 1))
+
+        # now copy revisions across. This way we can tell the user what
+        # the last revision is.
+        for revn, start_pos, end_pos in consume_revisions(dumpfile, rh):
+            length = end_pos - start_pos
+            msg = 'append r%d %s:[%d,%d) (%d bytes)'
+            logging.info(msg, revn, dumpfile, start_pos, end_pos, length)
+            rh.seek(start_pos)
+            pos = start_pos
+            while pos < end_pos:
+                buf = rh.read(min(16384, end_pos - pos))
+                if not dry_run:
+                    lh.write(buf)
+                pos += len(buf)
+
+            assert rh.tell() == end_pos
+
+    finally:
+        rh.close()
+
+    return revn
+
+
+def main(lhs, continuations, dry_run=False):
+
+    logging.info("Appending %s to %s", continuations, lhs)
+    if dry_run:
+        logging.info("Dry Run")
+
+    logging.debug("Opening %s", lhs)
+    lh = open(lhs, 'rb+')
+
+    try:
+        lhs_start = get_first_revn(lhs, lh)
+        logging.debug("%s: First rev: %d", lhs, lhs_start)
+
+        lhs_end   = get_last_revn(lhs, lh, lhs_start)
+        logging.debug("%s: Last rev: %d", lhs, lhs_end)
+
+        logging.info("%s: %d-%d", lhs, lhs_start, lhs_end)
+
+        for dump in continuations:
+            lhs_end = append_dump(lhs, lh, lhs_end, dump, dry_run=dry_run)
+            logging.info('%s now spans %d-%d', lhs, lhs_start, lhs_end)
+
+    finally:
+        if lh: lh.close()
+
+
+if __name__ == "__main__":
+
+    args = parse_args(sys.argv[1:])
+
+    if args.verbose > 1:    log_level = logging.DEBUG
+    elif args.verbose > 0:  log_level = logging.INFO
+    else:                   log_level = logging.WARN
+    logging.basicConfig(level=log_level)
+
+    main(args.base, args.continuations, args.dry_run)
+
