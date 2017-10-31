@@ -1,6 +1,4 @@
 #! /usr/bin/python
-# Copyright (C) Oliver 'kfsone' Smith, 2017
-
 
 import argparse
 import logging
@@ -87,37 +85,37 @@ def consume_revisions(filename, fh):
             # split into fields
             header, _, value = line.partition(': ')
 
-            if header.endswith('-length'):
-                # find the longest (outer) length description
-                value = int(value)
-                if value > length:
-                    logging.debug("%s:r%d: block length? %d", filename, revn, value)
-                    length = value
-
-            elif header == "Node-path":
-                logging.debug("%s:r%d: -- node %s", filename, revn, value)
-
-            elif header == 'Revision-number':
-                if revn:
+            if header == 'Revision-number':
+                if end_pos:
                     logging.debug('%s:r%d: ending previous block', filename, revn)
-                    assert revn
-                    assert start_pos
-                    assert end_pos
                     # If we have been tracking end_pos, that means we were
                     # consuming blank lines and are starting a new header.
                     # yield the span of the previous block.
                     save_pos = fh.tell()
                     yield revn, start_pos, end_pos
                     fh.seek(save_pos)
-                    start_pos, end_pos = end_pos, None
+                else:
+                    end_pos = start_pos
 
                 # remember the revision number
                 value = int(value)
                 logging.info('%s: revision: r%d', filename, value)
                 revn = value
+                start_pos, end_pos = int(end_pos), None
 
-    logging.debug("%s: END OF FILE", filename)
-    if revn and end_pos and start_pos < end_pos:
+            elif header == "Node-path":
+                logging.debug("%s:r%d: -- node %s", filename, revn, value)
+
+            elif header.endswith('-length'):
+                # find the longest (outer) length description
+                value = int(value)
+                if value > length:
+                    logging.debug("%s:r%d: block length? %d", filename, revn, value)
+                    length = value
+
+    end_pos = fh.tell()
+    logging.debug("%s: END OF FILE. r:%d, s:%d, e:%d", filename, revn, start_pos, end_pos)
+    if revn and start_pos < end_pos:
         logging.debug("%s:r%d: finish block %d-%d", filename, revn, start_pos, end_pos)
         yield revn, start_pos, end_pos
 
