@@ -23,6 +23,9 @@ def clean_path(path):
 logging._NOTE  = logging.INFO  - 3
 logging._MINOR = logging._NOTE  - 3
 logging._SPAM  = logging._MINOR - 3
+logging.addLevelName(logging._NOTE, "NOTE")
+logging.addLevelName(logging._MINOR, "MINOR")
+logging.addLevelName(logging._SPAM, "SPAM")
 
 def log_note(*args, **kwargs):
     logging.log(logging._NOTE, *args, **kwargs)
