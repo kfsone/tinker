@@ -8,24 +8,37 @@ from os import path as Path
 import sys
 
 
+class UsageError(UserWarning):
+    """
+    Class for reporting user misuse, stuff we anticipate failing that
+    is not a coding error but a user error.
+    """
+    pass
+
+
 def clean_path(path):
 
     return Path.abspath(Path.normpath(Path.expandvars(Path.expanduser(path))))
 
+logging._NOTE  = logging.INFO  - 3
+logging._MINOR = logging._NOTE  - 3
+logging._SPAM  = logging._MINOR - 3
 
-def parse_args(argv):
+def log_note(*args, **kwargs):
+    logging.log(logging._NOTE, *args, **kwargs)
 
-    parser = argparse.ArgumentParser("join svn dumps")
-    parser.add_argument('--dry-run', '-n', help="Dry run (don't write any data to base", action="store_true")
-    parser.add_argument("--verbose", "-v", help="Verbose mode", action="count", default=0)
-    parser.add_argument("base", help="Base import file")
-    parser.add_argument("continuations", nargs="+", help="Files to add to the import")
 
-    args = parser.parse_args(argv)
-    args.base = clean_path(args.base)
-    args.continuations = [clean_path(p) for p in args.continuations]
+def log_minor(*args, **kwargs):
+    logging.log(logging._MINOR, *args, **kwargs)
 
-    return args
+
+def log_spam(*args, **kwargs):
+    logging.log(logging._SPAM, *args, **kwargs)
+
+log_info  = logging.info
+log_debug = logging.debug
+log_warn  = logging.warn
+log_error = logging.error
 
 
 def get_first_revn(filename, fh):
@@ -40,7 +53,7 @@ def get_first_revn(filename, fh):
         line_no += 1
         last_line_pos = fh.tell()
         line = fh.readline().strip()
-        logging.debug('%s:%d: gfr: %s', filename, line_no, line)
+        log_spam('%s:%d: gfr: %s', filename, line_no, line)
         # If expect is not empty, the line should start with it.
         # If expect is empty, the line should be too.
         if (exp and not line.startswith(exp)) or (line and not exp):
@@ -57,19 +70,18 @@ def get_first_revn(filename, fh):
 
 def consume_revisions(filename, fh):
 
-    logging.debug('%s: consume revisions', filename)
+    log_debug('%s: consume revisions', filename)
     revn, start_pos, length, end_pos = None, fh.tell(), 0, None
     while True:
         line = fh.readline()
         if not line: break
         line = line.strip()
-        logging.debug("%s: consume: %s", filename, line)
         if not line:
             # We've reached a blank line.
             if length:
                 # We've just finished parsing a header block with a
                 # length value, so now we skip that much data.
-                logging.debug('skipping %d data bytes', length)
+                log_spam('skipping %d data bytes', length)
                 fh.seek(length, SEEK_CUR)
                 length = None
                 assert not fh.readline().strip()
@@ -87,69 +99,136 @@ def consume_revisions(filename, fh):
 
             if header == 'Revision-number':
                 if end_pos:
-                    logging.debug('%s:r%d: ending previous block', filename, revn)
+                    log_minor('%s:r%d: ending previous block', filename, revn)
                     # If we have been tracking end_pos, that means we were
                     # consuming blank lines and are starting a new header.
                     # yield the span of the previous block.
                     save_pos = fh.tell()
+                    fh.seek(end_pos)
                     yield revn, start_pos, end_pos
                     fh.seek(save_pos)
                 else:
                     end_pos = start_pos
 
                 # remember the revision number
-                value = int(value)
-                logging.info('%s: revision: r%d', filename, value)
-                revn = value
+                revn = int(value)
+                log_note('%s: revision: r%d', filename, revn)
                 start_pos, end_pos = int(end_pos), None
 
             elif header == "Node-path":
-                logging.debug("%s:r%d: -- node %s", filename, revn, value)
+                log_minor("%s:r%d: -- node %s", filename, revn, value)
 
             elif header.endswith('-length'):
                 # find the longest (outer) length description
                 value = int(value)
                 if value > length:
-                    logging.debug("%s:r%d: block length? %d", filename, revn, value)
+                    log_debug("%s:r%d: block length? %d", filename, revn, value)
                     length = value
 
     end_pos = fh.tell()
-    logging.debug("%s: END OF FILE. r:%d, s:%d, e:%d", filename, revn, start_pos, end_pos)
+    log_spam("%s: END OF FILE.", filename)
     if revn and start_pos < end_pos:
-        logging.debug("%s:r%d: finish block %d-%d", filename, revn, start_pos, end_pos)
+        log_minor("%s:r%d: finish block %d-%d", filename, revn, start_pos, end_pos)
         yield revn, start_pos, end_pos
 
 
-def get_last_revn(filename, fh, start_revn):
+def get_last_revn(filename, fh):
     for revn, start_pos, end_pos in consume_revisions(filename, fh):
         last_revn = revn
     return last_revn
 
 
-def append_dump(lhfilename, lh, lhs_revn, dumpfile, dry_run=False):
+##############################################################################
+# Simple dump of file info
 
-    logging.debug("Appending %s to %s after revn %d",
-                  dumpfile, lhfilename, lhs_revn)
+def dump_info(filename):
+    """
+    Output the first/last revision contained in a file.
 
+    :param filename: Name of the svn dump file to inspect.
+    """
+
+    with open(filename, 'rb') as fh:
+
+        first_revn = get_first_revn(filename, fh)
+        last_revn  = get_last_revn(filename, fh)
+
+        print("%s: %d-%d" % (filename, first_revn, last_revn))
+
+
+##############################################################################
+# Append one dump to the end of another.
+#
+
+def _append_check_revisions(dumpfile, rh, lhs_revn, rhs_revn, strict):
+
+    err = "%s: Previous dump ended at %d, new dump starts at %d."
+    if strict:
+        err += " [--strict]"
+        raise UsageError(err % (dumpfile, lhs_revn, rhs_revn))
+    if rhs_revn > lhs_revn + 1:
+        err += " Can't join with missing revisions."
+        raise UsageError(err % (dumpfile, lhs_revn, rhs_revn))
+
+    err += " (skipping overlapping revisions)"
+    log_warn(err % (dumpfile, lhs_revn, rhs_revn))
+
+    # Consume revisions until the revision we consume is the
+    # last revision we saw in the previous file
+    for revn, _, end_pos in consume_revisions(dumpfile, rh):
+        log_info("-- Skipped")
+        if revn == lhs_revn:
+            break
+
+    # did we exhaust
+    if revn < lhs_revn:
+        err = "%s: covered r%d-%d, nothing to append to previous r%d"
+        log_warn(err % (dumpfile, rhs_revn, revn, lhs_revn))
+
+
+def append_dump(lhfilename, lh, lhs_revn, dumpfile,
+                buffer_size=16384, strict=False, dry_run=False):
+    """
+    Append the contents of the file named by 'dumpfile' to the end of the
+    left-hand side file.
+
+    :param lhfilename: Name of the base file
+    :param lh: Open file descriptor of the left-hand file
+    :param lhs_revn: Last revision of lh
+    :param dumpfile: Name of the file to append
+    :param buffer_size: Maximum bytes per read/write operation during copy
+    :param strict: Set True to reject dumpfile if it does not start with
+                   lhs_revn + 1
+    :param dry_run: Set True to prevent write/modify operations
+    """
+
+    log_note("Appending %s to %s after revn %d", dumpfile, lhfilename, lhs_revn)
+
+    revn = lhs_revn
     lh.seek(0, SEEK_END)
     rh = open(dumpfile, 'rb')
     try:
+
         rhs_revn = get_first_revn(dumpfile, rh)
-        logging.debug("%s: starts at r%d", dumpfile, rhs_revn)
+        log_minor("%s: starts at r%d", dumpfile, rhs_revn)
+
         if rhs_revn != lhs_revn + 1:
-            err = "%s: Dump not contiguous: Starts at r%d rather than r%d"
-            raise RuntimeError(err % (dumpfile, rhs_revn, lhs_revn + 1))
+            _append_check_revisions(dumpfile, rh, lhs_revn, rhs_revn, strict)
 
         # now copy revisions across. This way we can tell the user what
         # the last revision is.
         for revn, start_pos, end_pos in consume_revisions(dumpfile, rh):
+
             length = end_pos - start_pos
-            msg = 'append r%d %s:[%d,%d) (%d bytes)'
-            logging.info(msg, revn, dumpfile, start_pos, end_pos, length)
+            size = "{:,}".format(length)
+            msg = 'appending %s:r%d (%s bytes)'
+            log_info(msg, dumpfile, revn, size)
+
             rh.seek(start_pos)
+
             pos = start_pos
             while pos < end_pos:
-                buf = rh.read(min(16384, end_pos - pos))
+                buf = rh.read(min(buffer_size, end_pos - pos))
                 if not dry_run:
                     lh.write(buf)
                 pos += len(buf)
@@ -162,40 +241,147 @@ def append_dump(lhfilename, lh, lhs_revn, dumpfile, dry_run=False):
     return revn
 
 
-def main(lhs, continuations, dry_run=False):
+##############################################################################
 
-    logging.info("Appending %s to %s", continuations, lhs)
+def append_dumps(lhs, continuations, unlink=False, strict=False,
+                 buffer_size=None, dry_run=False):
+    """
+    Incrementally append one or more dumps (continuations) to a base.
+
+    For example, you could append dumps for r20-29 and r30-300 to a file that
+    ends with dump 19.
+
+    :param lhs:  Name of the left-hand side (base) file,
+    :param continuations: List of filenames to be appended,
+    :param unlink: True if you want the continuation files removed after they
+                   have been appended to the base.
+    :param strict: True to require continuations to be exactly contiguous. If
+                   this is not set, overlapping revisions will be ignored.
+                   E.g. when strict=False you can merge 1-100 with 100-101,
+                   without duplicating 100. If strict=True this would error.
+    :param dry_run: Enable to prevent any write/modify operations.
+    """
+
+    log_info("Appending %s to %s", continuations, lhs)
     if dry_run:
-        logging.info("Dry Run")
+        log_note("Dry Run")
 
-    logging.debug("Opening %s", lhs)
+    log_debug("Opening %s", lhs)
     lh = open(lhs, 'rb+')
 
     try:
         lhs_start = get_first_revn(lhs, lh)
-        logging.debug("%s: First rev: %d", lhs, lhs_start)
+        log_note("%s: First rev: %d", lhs, lhs_start)
 
-        lhs_end   = get_last_revn(lhs, lh, lhs_start)
-        logging.debug("%s: Last rev: %d", lhs, lhs_end)
+        lhs_end   = get_last_revn(lhs, lh)
+        log_note("%s: Last rev: %d", lhs, lhs_end)
 
-        logging.info("%s: %d-%d", lhs, lhs_start, lhs_end)
+        log_info("%s: %d-%d", lhs, lhs_start, lhs_end)
 
         for dump in continuations:
-            lhs_end = append_dump(lhs, lh, lhs_end, dump, dry_run=dry_run)
-            logging.info('%s now spans %d-%d', lhs, lhs_start, lhs_end)
+            lhs_end = append_dump(lhs, lh, lhs_end, dump,
+                                  strict=strict, dry_run=dry_run)
+            log_info('%s now spans %d-%d', lhs, lhs_start, lhs_end)
+            if unlink:
+                log_note("Unlink: %s", dump)
+                # Make sure lh is committed to disk.
+                lh.flush()
+                if not dry_run:
+                    os.unlink(dump)
 
     finally:
         if lh: lh.close()
 
 
-if __name__ == "__main__":
+##############################################################################
+# Argument parsing
+
+def add_cmd_parser(sub_parsers, name, helptxt, func, writes):
+
+    parser = sub_parsers.add_parser(name, help=helptxt)
+
+    if writes:
+        parser.add_argument('--dry-run', '-n', action="store_true",
+                help="Dry run (read operations only)")
+
+    parser.add_argument("--verbose", "-v",     action="count", default=0,
+                help="Increase verbosity")
+
+    parser.set_defaults(func=func)
+
+    return parser
+
+
+def parse_args(argv):
+
+    def join_dumps_wrapper(args):
+
+        args.base = clean_path(args.base)
+        args.continuations = [clean_path(p) for p in args.continuations]
+
+        assert args.buf_size > 0
+
+        append_dumps(args.base, args.continuations,
+                     buffer_size=args.buf_size,
+                     dry_run=args.dry_run,
+                     strict=args.strict,
+                     unlink=args.rm)
+
+    def dump_info_wrapper(args):
+
+        for filename in args.dumpfiles:
+
+            dump_info(filename)
+
+    parser = argparse.ArgumentParser("manage svn dumps")
+
+    cmd_parsers = parser.add_subparsers(help="Functions")
+
+    join_parser = add_cmd_parser(cmd_parsers, "join", "Join contiguous dumps",
+                                 join_dumps_wrapper, True)
+    join_parser.add_argument("--strict", action="store_true",
+                help="Just must be exactly contiguous to work.")
+    join_parser.add_argument("--rm", action="store_true",
+                help="Remove continuation files after merging them.")
+    join_parser.add_argument("--buf-size",
+                dest="buf_size", type=int, default=16384,
+                help="Buffer size for reads/writes (def: 16384)")
+    join_parser.add_argument("base",
+                help="Base import file")
+    join_parser.add_argument("continuations", nargs="+",
+                help="Files to add to the import")
+
+    info_parser = add_cmd_parser(cmd_parsers, "info", "Inspect dump(s)",
+                                 dump_info_wrapper, False)
+    info_parser.add_argument("dumpfiles", nargs="+",
+                help="File/path names of dump(s) to inspect")
+
+    return parser.parse_args(argv)
+
+
+##############################################################################
+# Entry point when used as a script.
+
+def main(argv):
 
     args = parse_args(sys.argv[1:])
 
-    if args.verbose > 1:    log_level = logging.DEBUG
-    elif args.verbose > 0:  log_level = logging.INFO
-    else:                   log_level = logging.WARN
-    logging.basicConfig(level=log_level)
+    log_levels = [
+        logging.WARN,
+        logging.INFO, logging._NOTE, logging._MINOR, logging._SPAM,
+        logging.DEBUG
+    ]
+    args.verbose = min(args.verbose, len(log_levels))
+    logging.basicConfig(level=log_levels[args.verbose])
 
-    main(args.base, args.continuations, args.dry_run)
+    try:
+        args.func(args)
+    except UsageError as e:
+        sys.stderr.write("ERROR: %s\n" % (str(e)))
+        sys.exit(-1)
+
+
+if __name__ == "__main__":
+
+    main(sys.argv[1:])
 
