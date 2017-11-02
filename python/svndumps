@@ -5,20 +5,22 @@ import logging
 from io import SEEK_CUR, SEEK_END
 import os
 from os import path as Path
+import re
 import sys
 
 
-class UsageError(UserWarning):
-    """
-    Class for reporting user misuse, stuff we anticipate failing that
-    is not a coding error but a user error.
-    """
-    pass
+##############################################################################
+# Constants.
+
+FORCE_MODE = -1
+
+revrangeRe = re.compile(r"\b(" + "r?([0-9]+)-r?([0-9]+)" + r")\b")
 
 
-def clean_path(path):
+##############################################################################
+# Logging: add our own levels for better verbosity partitioning.
 
-    return Path.abspath(Path.normpath(Path.expandvars(Path.expanduser(path))))
+# Define 3 levels of our own; note, minor info and spam.
 
 logging._NOTE  = logging.INFO  - 3
 logging._MINOR = logging._NOTE  - 3
@@ -27,13 +29,13 @@ logging.addLevelName(logging._NOTE, "NOTE")
 logging.addLevelName(logging._MINOR, "MINOR")
 logging.addLevelName(logging._SPAM, "SPAM")
 
+# Alias all the logging.* and our custom levels as log_*
+
 def log_note(*args, **kwargs):
     logging.log(logging._NOTE, *args, **kwargs)
 
-
 def log_minor(*args, **kwargs):
     logging.log(logging._MINOR, *args, **kwargs)
-
 
 def log_spam(*args, **kwargs):
     logging.log(logging._SPAM, *args, **kwargs)
@@ -44,34 +46,96 @@ log_warn  = logging.warn
 log_error = logging.error
 
 
-def get_first_revn(filename, fh):
+##############################################################################
+# Exception types.
+
+class UsageError(UserWarning):
     """
-        Confirm that fh looks like an svn dump and return the first revision.
-
-        \param  filename    Name of the file being read
-        \param  fh          Open handle to the file
+    Class for reporting user misuse, stuff we anticipate failing that
+    is not a coding error but a user error.
     """
-    line_no = 0
-    for exp in ("SVN-fs-dump-format-version:", "", "UUID:", "", "Revision-number:"):
-        line_no += 1
-        last_line_pos = fh.tell()
-        line = fh.readline().strip()
-        log_spam('%s:%d: gfr: %s', filename, line_no, line)
-        # If expect is not empty, the line should start with it.
-        # If expect is empty, the line should be too.
-        if (exp and not line.startswith(exp)) or (line and not exp):
-            err = "%s:%d: Not recognized as an SVN dump: '%s'"
-            raise RuntimeError(err % (filename, line_no, line))
+    pass
 
-    # Put the line back into the buffer for consumption.
-    fh.seek(last_line_pos)
 
-    # The last line should be a revision number:
-    _, _, revn = line.partition(': ')
-    return int(revn)
+##############################################################################
+# Helpers.
+
+def clean_path(path):
+
+    return Path.abspath(Path.normpath(Path.expandvars(Path.expanduser(path))))
+
+
+def rename_with_range(filename, old_start, old_end, new_start, new_end,
+                      dry_run=True):
+    """
+    Insert or replace a revision range string (nnn-mmm) into the filename
+    of an existing dump file.
+    """
+
+    new_range = "%d-%d" % (new_start, new_end)
+
+    # Does the filename already contain a revision range
+    rangeM = revrangeRe.search(filename)
+    start_n = str(old_start)
+    end_n   = str(old_end)
+    end_n1  = str(old_end + 1)
+
+    start_r = "r" + start_n
+    end_r   = "r" + end_n
+    end_r1  = "r" + end_n1
+
+    patterns = [start_r, start_n, end_r, end_n, end_r1, end_n1]
+    patRe, pattern = None, None
+    for p in start_r, start_n, end_r, end_n, end_r1, end_n1:
+        comp = re.compile(r'\b' + p + r'\b')
+        if comp.search(filename):
+            patRe, pattern = comp, p
+            break
+
+    msg = "rename with range %s: %d-%d to %s"
+    logging.debug(msg, filename, old_start, old_end, new_range)
+
+    new_name = filename
+    if rangeM and int(rangeM.group(2)) == old_start and int(rangeM.group(3)) in (old_end, old_end + 1):
+        log_note("Found '%s' in old filename.", rangeM.group(1))
+        new_name = filename.replace(rangeM.group(1), new_range)
+
+    # Does it contain the start/end of the original range?
+    elif patRe:
+
+        log_note("Found '%s' in old %s.", pattern, filename)
+        new_name = patRe.sub(new_range, filename)
+
+    else:
+        log_note("Inserting range into name")
+        # No range, we'll add one
+        base, ext = os.path.splitext(filename)
+        print("base, ext = %s, %s" % (base, ext))
+        new_name = base + '.' + new_range
+        if ext: new_name += '.' + ext
+
+    if new_name is filename:
+        log_minor("No need to change filename.")
+        return
+
+    log_info("Renaming %s -> %s" % (filename, new_name))
+    if not dry_run:
+        os.rename(filename, new_name)
 
 
 def consume_revisions(filename, fh):
+    """
+    Generator that will find the start and end position of every revision
+    in a file starting from the current position.
+
+    Note: Expects to be at the first 'Revision-number:' line in the file,
+    does not handle consumption of the 4-line svn dump header.
+
+    :param filename:  Name fo the file being processed (for logging etc),
+    :param fh:        Open file handle to the file being processed
+
+    :yield: tuple(revision_no, start_pos, end_pos)
+    """
 
     log_debug('%s: consume revisions', filename)
     revn, start_pos, length, end_pos = None, fh.tell(), 0, None
@@ -114,8 +178,18 @@ def consume_revisions(filename, fh):
                     end_pos = start_pos
 
                 # remember the revision number
-                revn = int(value)
-                log_note('%s: revision: r%d', filename, revn)
+                new_revn = int(value)
+                log_note('%s: revision: r%d', filename, new_revn)
+                if revn and revn is not FORCE_MODE:
+                    gap = new_revn - revn
+                    if gap > 1:
+                        if gap == 2:
+                            err = "MISSING/MISSED REVISION: r%d"
+                            log_warn(err % (revn + 1))
+                        else:
+                            err = "Gap in revisions! last: r%d, next: r%d"
+                            log_warn(err % (revn, new_revn))
+                revn = new_revn
                 start_pos, end_pos = int(end_pos), None
 
             elif header == "Node-path":
@@ -135,7 +209,49 @@ def consume_revisions(filename, fh):
         yield revn, start_pos, end_pos
 
 
+##############################################################################
+# Minor functions
+
+def get_first_revn(filename, fh):
+    """
+        Confirm that fh looks like an svn dump and return the first revision.
+
+        \param  filename    Name of the file being read
+        \param  fh          Open handle to the file
+    """
+    line_no = 0
+    for exp in ("SVN-fs-dump-format-version:", "", "UUID:", "", "Revision-number:"):
+        line_no += 1
+        last_line_pos = fh.tell()
+        line = fh.readline().strip()
+        log_spam('%s:%d: gfr: %s', filename, line_no, line)
+        # If expect is not empty, the line should start with it.
+        # If expect is empty, the line should be too.
+        if (exp and not line.startswith(exp)) or (line and not exp):
+            err = "%s:%d: Not recognized as an SVN dump: '%s'"
+            raise RuntimeError(err % (filename, line_no, line))
+
+    # Put the line back into the buffer for consumption.
+    fh.seek(last_line_pos)
+
+    # The last line should be a revision number:
+    _, _, revn = line.partition(': ')
+    return int(revn)
+
+
 def get_last_revn(filename, fh):
+    """
+    Returns the last revision number in a file by reading all the
+    revisions in the file (skips data for speed, but has to read all
+    the headers.
+
+    Note: This is a pessimistic approach, we could just read backwards
+    from the end of the file, the problem with that approach is that it
+    wouldn't work if your file contained 'Revision-number: ...'.
+
+    :param filename:  Name of the file being read
+    :param fh:        Open file handle to the file
+    """
     for revn, start_pos, end_pos in consume_revisions(filename, fh):
         last_revn = revn
     return last_revn
@@ -197,7 +313,7 @@ def append_dump(lhfilename, lh, lhs_revn, dumpfile,
 
     :param lhfilename: Name of the base file
     :param lh: Open file descriptor of the left-hand file
-    :param lhs_revn: Last revision of lh
+    :param lhs_revn: Last revision of lh or FORCE_MODE to force 'blind' append
     :param dumpfile: Name of the file to append
     :param buffer_size: Maximum bytes per read/write operation during copy
     :param strict: Set True to reject dumpfile if it does not start with
@@ -215,7 +331,7 @@ def append_dump(lhfilename, lh, lhs_revn, dumpfile,
         rhs_revn = get_first_revn(dumpfile, rh)
         log_minor("%s: starts at r%d", dumpfile, rhs_revn)
 
-        if rhs_revn != lhs_revn + 1:
+        if lhs_revn is not FORCE_MODE and rhs_revn != lhs_revn + 1:
             _append_check_revisions(dumpfile, rh, lhs_revn, rhs_revn, strict)
 
         # now copy revisions across. This way we can tell the user what
@@ -241,13 +357,13 @@ def append_dump(lhfilename, lh, lhs_revn, dumpfile,
     finally:
         rh.close()
 
-    return revn
+    return rhs_revn, revn
 
 
 ##############################################################################
 
-def append_dumps(lhs, continuations, unlink=False, strict=False,
-                 buffer_size=None, dry_run=False):
+def append_dumps(lhs, continuations, unlink=False, strict=False, force=False,
+                 rename=False, buffer_size=None, dry_run=True):
     """
     Incrementally append one or more dumps (continuations) to a base.
 
@@ -258,12 +374,18 @@ def append_dumps(lhs, continuations, unlink=False, strict=False,
     :param continuations: List of filenames to be appended,
     :param unlink: True if you want the continuation files removed after they
                    have been appended to the base.
+    :param force:  True if you want to ignore revision numbers of the base
+                   file. Use if you are absolutely certain that each file
+                   starts with the next revision from the previous file.
+    :param rename: Set true to insert or replace revision ranges in file names.
     :param strict: True to require continuations to be exactly contiguous. If
                    this is not set, overlapping revisions will be ignored.
                    E.g. when strict=False you can merge 1-100 with 100-101,
                    without duplicating 100. If strict=True this would error.
     :param dry_run: Enable to prevent any write/modify operations.
     """
+
+    assert not (rename and force)
 
     log_info("Appending %s to %s", continuations, lhs)
     if dry_run:
@@ -273,27 +395,46 @@ def append_dumps(lhs, continuations, unlink=False, strict=False,
     lh = open(lhs, 'rb+')
 
     try:
-        lhs_start = get_first_revn(lhs, lh)
-        log_note("%s: First rev: %d", lhs, lhs_start)
+        # Summarize the first file if the user didn't --force, or
+        # if we are in strict mode.
+        if strict or (not force):
+            lhs_start = get_first_revn(lhs, lh)
+            log_note("%s: First rev: %d", lhs, lhs_start)
 
-        lhs_end   = get_last_revn(lhs, lh)
-        log_note("%s: Last rev: %d", lhs, lhs_end)
+            original_end = lhs_end = get_last_revn(lhs, lh)
+            log_note("%s: Last rev: %d", lhs, lhs_end)
 
-        log_info("%s: %d-%d", lhs, lhs_start, lhs_end)
+            log_info("%s: %d-%d", lhs, lhs_start, lhs_end)
+
+        # In force mode, lhs_end has a special value
+        if force:
+            lhs_end = FORCE_MODE
+            log_info("%s: Forced append", lhs)
 
         for dump in continuations:
-            lhs_end = append_dump(lhs, lh, lhs_end, dump,
-                                  strict=strict, dry_run=dry_run)
-            log_info('%s now spans %d-%d', lhs, lhs_start, lhs_end)
+            rhs_start, rhs_end = append_dump(lhs, lh, lhs_end, dump,
+                                             strict=strict, dry_run=dry_run)
+
+            if not force:
+                log_info('%s now spans %d-%d', lhs, lhs_start, rhs_end)
+                lhs_end = rhs_end
+            else:
+                msg = "%s: appended r%d-%d from %s"
+                log_info(msg, lhs, rhs_start, rhs_end, dump)
+
             if unlink:
                 log_note("Unlink: %s", dump)
                 # Make sure lh is committed to disk.
                 lh.flush()
                 if not dry_run:
                     os.unlink(dump)
-
     finally:
-        if lh: lh.close()
+        lh.flush()
+        lh.close()
+
+    if rename:
+        rename_with_range(lhs, lhs_start, original_end, lhs_start, lhs_end,
+                          dry_run=dry_run)
 
 
 ##############################################################################
@@ -324,9 +465,14 @@ def parse_args(argv):
 
         assert args.buf_size > 0
 
+        if args.force and args.rename:
+            raise UsageError("Cannot use --rename and --force together")
+
         append_dumps(args.base, args.continuations,
                      buffer_size=args.buf_size,
                      dry_run=args.dry_run,
+                     force=args.force,
+                     rename=args.rename,
                      strict=args.strict,
                      unlink=args.rm)
 
@@ -342,13 +488,22 @@ def parse_args(argv):
 
     join_parser = add_cmd_parser(cmd_parsers, "join", "Join contiguous dumps",
                                  join_dumps_wrapper, True)
-    join_parser.add_argument("--strict", action="store_true",
-                help="Just must be exactly contiguous to work.")
-    join_parser.add_argument("--rm", action="store_true",
-                help="Remove continuation files after merging them.")
     join_parser.add_argument("--buf-size",
                 dest="buf_size", type=int, default=16384,
                 help="Buffer size for reads/writes (def: 16384)")
+    join_parser.add_argument("--force",
+                action="store_true",
+                help="Force append: don't check whether revision numbers are "
+                     "contiguous. Use only when you are certain your files "
+                     "are sequential: 1-99, 100-199, etc. Does not "
+                     "eliminate overlaps. May significantly improve speed.")
+    join_parser.add_argument("--rename", "--ren", action="store_true",
+                help="Rename files by adding (or replacing) revision ranges "
+                     "in the filename (e.g svn.100-199.dump)")
+    join_parser.add_argument("--rm", action="store_true",
+                help="Remove continuation files after merging them.")
+    join_parser.add_argument("--strict", action="store_true",
+                help="Just must be exactly contiguous to work.")
     join_parser.add_argument("base",
                 help="Base import file")
     join_parser.add_argument("continuations", nargs="+",
