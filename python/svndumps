@@ -1,4 +1,13 @@
-#! /usr/bin/python
+#! /bin/env python
+##############################################################################
+# https://github.com/kfsone/tinker/blob/master/python/svndumps
+# Copyright (C) Oliver 'kfsone' Smith 2017. Licensed under the MIT License.
+# See https://github.com/kfsone/tinker/blob/master/LICENSE
+#
+# Tool for manipulating (primarily appending) svn repository dumps.
+#
+##############################################################################
+#
 
 import argparse
 import logging
