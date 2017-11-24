@@ -1,4 +1,4 @@
-#! /bin/env python
+#! /usr/bin/env python
 ##############################################################################
 # https://github.com/kfsone/tinker/blob/master/python/svndumps
 # Copyright (C) Oliver 'kfsone' Smith 2017. Licensed under the MIT License.
@@ -81,7 +81,9 @@ def rename_with_range(filename, old_start, old_end, new_start, new_end,
     of an existing dump file.
     """
 
-    new_range = "%d-%d" % (new_start, new_end)
+    rangelen = max(len(str(new_end)), 6)
+    fmt      = "%%0%dd" % rangelen
+    new_range = (fmt+'-'+fmt) % (new_start, new_end)
 
     # Does the filename already contain a revision range
     rangeM = revrangeRe.search(filename)
@@ -105,13 +107,13 @@ def rename_with_range(filename, old_start, old_end, new_start, new_end,
     logging.debug(msg, filename, old_start, old_end, new_range)
 
     new_name = filename
-    if rangeM and int(rangeM.group(2)) == old_start and int(rangeM.group(3)) in (old_end, old_end + 1):
+    if rangeM and int(rangeM.group(2)) == old_start and \
+            int(rangeM.group(3)) in (old_end, old_end + 1):
         log_note("Found '%s' in old filename.", rangeM.group(1))
         new_name = filename.replace(rangeM.group(1), new_range)
 
     # Does it contain the start/end of the original range?
     elif patRe:
-
         log_note("Found '%s' in old %s.", pattern, filename)
         new_name = patRe.sub(new_range, filename)
 
@@ -269,17 +271,30 @@ def get_last_revn(filename, fh):
 ##############################################################################
 # Simple dump of file info
 
-def dump_info(filename):
+def dump_info(filename, strict=False):
     """
     Output the first/last revision contained in a file.
 
     :param filename: Name of the svn dump file to inspect.
+    :param strict: Set True to fail on inconsistencies.
     """
 
     with open(filename, 'rb') as fh:
 
         first_revn = get_first_revn(filename, fh)
-        last_revn  = get_last_revn(filename, fh)
+
+        # We haven't *consumed* this revision yet, so we're going to see
+        # it again immediately when we start consume_revisions.
+        last_revn = first_revn - 1
+
+        for revn, _, _ in consume_revisions(filename, fh):
+            if revn != last_revn + 1:
+                error = "Got revision %d after %d!"
+                if strict:
+                    raise UserWarning(error % (revn, last_revn))
+                else:
+                    log_warn(error, revn, last_revn)
+            last_revn = revn
 
         print("%s: %d-%d" % (filename, first_revn, last_revn))
 
@@ -350,7 +365,7 @@ def append_dump(lhfilename, lh, lhs_revn, dumpfile,
             length = end_pos - start_pos
             size = "{:,}".format(length)
             msg = 'appending %s:r%d (%s bytes)'
-            log_info(msg, dumpfile, revn, size)
+            log_note(msg, dumpfile, revn, size)
 
             rh.seek(start_pos)
 
@@ -447,6 +462,41 @@ def append_dumps(lhs, continuations, unlink=False, strict=False, force=False,
 
 
 ##############################################################################
+#
+
+def emit_range(filename, fh, firstRevn, lastRevn, strict=False):
+
+    # Copy any header in the file.
+    start_pos = fh.tell()
+    start_rev = get_first_revn(filename, fh)
+
+    if strict and start_rev > firstRevn:
+        msg = "[--strict] first revn is %d but dump starts with %d"
+        raise UsageError(msg % (firstRevn, start_rev))
+
+    # Output the header from the source.
+    end_pos = fh.tell()
+    fh.seek(start_pos)
+    sys.stdout.write(fh.read(end_pos - start_pos))
+    log_debug("Transferred %d bytes of header" % (end_pos - start_pos))
+
+    for revn, start_pos, end_pos in consume_revisions(filename, fh):
+        if revn > lastRevn:
+            break
+        if revn < firstRevn:
+            continue
+        fh.seek(start_pos)
+        sys.stdout.write(fh.read(end_pos - start_pos))
+        log_info("Rev %d (%d bytes)" % (revn, end_pos - start_pos))
+
+    if strict and revn < lastRevn:
+        msg = "[--strict] last revn is %d but dump ended with %d"
+        raise UsageError(msg % (lastRevn, revn))
+    
+    log_debug("Finished")
+
+
+##############################################################################
 # Argument parsing
 
 def add_cmd_parser(sub_parsers, name, helptxt, func, writes):
@@ -491,9 +541,30 @@ def parse_args(argv):
 
             dump_info(filename)
 
+    def range_wrapper(args):
+
+        if args.first < 0:
+            raise UsageError("First must be >= 0")
+        if args.second <= args.first:
+            raise UsageError("Second revision must be > first.")
+
+        try:
+            with open(args.source, "r") as fh:
+                emit_range(args.source, fh, args.first, args.second,
+                           strict=args.strict)
+        except IOError as e:
+            raise UsageError("Unable to access '%s': %s" % (args.source, e))
+
     parser = argparse.ArgumentParser("manage svn dumps")
 
     cmd_parsers = parser.add_subparsers(help="Functions")
+
+    info_parser = add_cmd_parser(cmd_parsers, "info", "Inspect dump(s)",
+                                 dump_info_wrapper, False)
+    info_parser.add_argument("--strict", action="store_true",
+                help="Fail if revisions are not contiguous.")
+    info_parser.add_argument("dumpfiles", nargs="+",
+                help="File/path names of dump(s) to inspect")
 
     join_parser = add_cmd_parser(cmd_parsers, "join", "Join contiguous dumps",
                                  join_dumps_wrapper, True)
@@ -512,16 +583,20 @@ def parse_args(argv):
     join_parser.add_argument("--rm", action="store_true",
                 help="Remove continuation files after merging them.")
     join_parser.add_argument("--strict", action="store_true",
-                help="Just must be exactly contiguous to work.")
+                help="Dumps must be exactly contiguous to work.")
     join_parser.add_argument("base",
                 help="Base import file")
     join_parser.add_argument("continuations", nargs="+",
                 help="Files to add to the import")
 
-    info_parser = add_cmd_parser(cmd_parsers, "info", "Inspect dump(s)",
-                                 dump_info_wrapper, False)
-    info_parser.add_argument("dumpfiles", nargs="+",
-                help="File/path names of dump(s) to inspect")
+    range_parser = add_cmd_parser(cmd_parsers, "range",
+                "Outputs a new dump using just a given range of revisions.",
+                                range_wrapper, False)
+    range_parser.add_argument("--strict", action="store_true",
+                help="Require all ranges to be present in source.")
+    range_parser.add_argument("first", type=int, help="First revision to include")
+    range_parser.add_argument("second", type=int, help="Last revision to include")
+    range_parser.add_argument("source", type=str, help="Source file to read from")
 
     return parser.parse_args(argv)
 
@@ -551,4 +626,5 @@ def main(argv):
 if __name__ == "__main__":
 
     main(sys.argv[1:])
+
 
