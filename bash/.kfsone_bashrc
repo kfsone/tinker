@@ -1,0 +1,138 @@
+##############################################################################
+# Oliver's various bash fragments.
+#
+
+##############################################################################
+# Report an error to stderr and exit.
+#
+function die ()
+{
+    echo >&2 "ERROR: $*"
+    exit 42
+}
+
+##############################################################################
+# Report a warning to stderr.
+#
+function warn ()
+{
+    echo >&2 "WARNING: $*"
+}
+
+##############################################################################
+# Present a minor warning to stderr above default verbosity.
+#
+function minor ()
+{
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo >&2 "MINOR: $*"
+    fi
+}
+
+##############################################################################
+# Report a status message to stdout except in quiet mode.
+#
+function status()
+{
+    if [ ${DEBUG:-0} -ge 0 ]; then
+        echo >&1 "-- $*"
+    fi
+}
+
+##############################################################################
+# Report informational message if DEBUG is set to something > 0
+#
+function info ()
+{
+    if [ ${DEBUG:-0} -gt 0 ]; then
+        echo >&1 "INFO: $*"
+    fi
+}
+
+##############################################################################
+# Report informational message only if DEBUG is set to > 1
+#
+function note ()
+{
+    if [ ${DEBUG:-0} -gt 1 ]; then
+        echo "NOTE: $*"
+    fi
+}
+
+##############################################################################
+# Internal reporting at higher debug levels (> 2)
+#
+function debug ()
+{
+    if [ ${DEBUG:-0} -gt 2 ]; then
+        echo "# $*"
+    fi
+}
+
+##############################################################################
+# Spammy reporting at debug levels > 3
+#
+function spam ()
+{
+    if [ ${DEBUG:-0} -gt 3 ]; then
+        echo "## $*"
+    fi
+}
+
+##############################################################################
+# Report a positive progress event to stdout, except in quiet mode.
+#
+function success ()
+{
+	if [ ${DEBUG:-0} -ge 0 ]; then
+		echo "SUCCESS: $*"
+	fi
+}
+
+##############################################################################
+# Report a fail condition to stdout, except in quiet mode.
+#
+function failed ()
+{
+	if [ ${DEBUG:-0} -ge 0 ]; then
+		echo "FAILED: $*"
+	fi
+}
+
+##############################################################################
+# Add paths to the PATH only if they exist and without duplication.
+#
+function add_paths ()
+{
+	local new_path="${PATH}"
+
+    for path in $*; do
+
+        if [ ! -e "$path" ]; then
+            # Don't add paths that don't exist.
+            minor "add_paths: $path: Skipping: Does not exist."
+
+        else
+            if [[ "${new_path}" =~ (^|:)${path}/?($|:) ]]; then
+                minor "add_paths: $path: Skipping: already in PATH."
+
+            else
+                if [ -z "${new_path}" ]; then
+                    export PATH="${path}"
+                else
+                    export PATH="${new_path}:${path}"
+                fi
+
+                note "add_paths: $path: Added."
+            fi
+        fi
+
+    done
+
+	if [ "${new_path}" != "${PATH}" ]; then
+		debug "add_paths: Exporting new PATH: ${new_path}"
+		export PATH="${new_path}"
+    fi
+}
+
+
