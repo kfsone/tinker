@@ -3,11 +3,19 @@
 #
 
 ##############################################################################
+# Report an error to stderr.
+#
+function error ()
+{
+    echo >&2 "ERROR: $*"
+}
+
+##############################################################################
 # Report an error to stderr and exit.
 #
 function die ()
 {
-    echo >&2 "ERROR: $*"
+    error $*
     exit 42
 }
 
@@ -135,6 +143,26 @@ function add_paths ()
     fi
 }
 
+##############################################################################
+# Test if a file exists and is readable, and then source it.
+# Shortcut for if [ -f $P -a -r $P ]; then . $P; fi
+#
+function source_if_exists ()
+{
+    local shfrag="${1:-}"
+    if [ -z "${shfrag}" -o -n "${2:-}" ]; then
+        error "source_if_exists: takes one argument (frag name)"
+        return 1
+    fi
+
+    if [ -f "${shfrag}" -a -r "${shfrag}" ]; then
+        debug "source_if_exists: source ${shfrag}"
+        source "${shfrag}"
+    else
+        debug "source_if_exists: ${shfrag}: does not exist."
+    fi
+    return 0
+}
 
 ##############################################################################
 # Common settings

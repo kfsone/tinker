@@ -39,7 +39,6 @@ set lazyredraw modeline modelines=1 showtabline=1 laststatus=2
 "
 let powerline_root=$POWERLINE_ROOT
 if powerline_root != ""
-    print "Enabling powerline"
 	set rtp+=$POWERLINE_ROOT/powerline/bindings/vim
 	if has('macunix')
 		set guifont=Inconsolata\ for\ Powerline:h14
