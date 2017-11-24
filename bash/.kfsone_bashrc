@@ -136,3 +136,47 @@ function add_paths ()
 }
 
 
+##############################################################################
+# Common settings
+#
+
+# I like a lot of history.
+if [ ${HISTFILESIZE:-0} -lt 100000 ]; then
+	export HISTFILESIZE=100000
+fi
+if [ ${HISTSIZE:-0} -lt 50000 ]; then
+	export HISTSIZE=50000
+fi
+# append to history instead of overwriting.
+shopt -s histappend
+# don't put duplicate lines or lines start with space in history.
+export HISTCONTROL=ignoreboth
+# resize the window after every command
+shopt -s checkwinsize
+
+# My most common paths.
+add_paths "${HOME}/bin" "${HOME}/.local/bin"
+add_paths "${HOME}/Development/arcanist/bin"
+if [ -n "${GOPATH}" ]; then add_paths "${GOPATH}/bin"; fi
+
+export EDITOR="vim" SVN_EDITOR="vim"
+
+# If powerline is installed, lets turn it on.
+if [ -n "$(which powerline)" ]; then
+	if [ -e "/usr/share/powerline" ]; then
+		export POWERLINE_ROOT="/usr/share/powerline"
+	fi
+
+	if [ -n "${POWERLINE_ROOT:-}" ]; then
+		# Start the prompt daemon
+		powerline-daemon -q
+
+		# Config
+		POWERLINE_BASH_CONTINUATION=1
+		POWERLINE_BASH_SEKECT=1
+
+		# Source the integration
+		. "${POWERLINE_ROOT}/bindings/bash/powerline.sh"
+	fi
+fi
+
