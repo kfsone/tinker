@@ -141,8 +141,8 @@ class PackedStruct(object):
         if net_endian: struct_def = '!' + struct_def
 
         cls_members = {
-            'STRUCT': struct_def,
-            'SIZE': calcsize(struct_def),
+            'STRUCT':  struct_def,
+            'SIZE':    calcsize(struct_def),
         }
         cls_members.update(members)
 
