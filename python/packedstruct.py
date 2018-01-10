@@ -100,11 +100,18 @@ class PackedStruct(object):
     structure definitions.
     """
 
-    def __init__(self, fh):
+    def __init__(self, fh, *args):
         self._values = unpack(self.STRUCT, fh.read(self.SIZE))
 
-    def __getitem__(self, key):
-        return self._values[self.FIELDS[key]]
+    def __str__(self):
+        return '<'+self.__class__.__name__+'>'
+
+    def __repr__(self):
+        return "{}({})".format(self.__class__.__name__,
+            ','.join('{}={}'.format(self.FIELDS[i], self._values[i])
+                     for i in range(len(self.FIELDS))
+                     if not self.FIELDS[i].startswith('mReserved'))
+        )
 
     @staticmethod
     def create(struct_name, fields, net_endian=False):
@@ -126,11 +133,12 @@ class PackedStruct(object):
         :return:       A class definition.
         """
 
-        struct_defs, members = [], {}
+        struct_defs, field_names, members = [], [], {}
 
         # build a list of lambdas to implement the members.
         for defn, field_name in fields:
             field_name = "m" + field_name.title()
+            field_names.append(field_name)
             member_num = len(members)
             members[field_name] = property(
                 lambda self, n=member_num: self._values[int(n)]
@@ -143,7 +151,7 @@ class PackedStruct(object):
         cls_members = {
             'STRUCT':  struct_def,
             'SIZE':    calcsize(struct_def),
-            'fields':  frozenset(members.keys())
+            'FIELDS':  tuple(field_names),
         }
         cls_members.update(members)
 
@@ -294,4 +302,3 @@ class Converter(object):
             struct_fields.append((type_rep, field))
 
         return text
-
