@@ -107,7 +107,7 @@ class PackedStruct(object):
         return self._values[self.FIELDS[key]]
 
     @staticmethod
-    def create(name, fields, net_endian=False):
+    def create(struct_name, fields, net_endian=False):
         """
         Create a PackedStruct class describing the representation of a binary
         data structure as might be specified via a C 'struct'.
@@ -118,7 +118,7 @@ class PackedStruct(object):
         Fields can be accessed as attributes by using the name prefixed with
         'm' and parsed as title(), e.g. "('2h', 'shorts')" would be mShorts.
 
-        :param name: The name of the struct and class.
+        :param struct_name: The name of the struct and class.
         :param fields: An iterable of field descriptions where each entry is
                        a tuple of (`struct` representation, fieldname)
         :param net_endian: True or False whether the data is stored in
@@ -129,10 +129,10 @@ class PackedStruct(object):
         struct_defs, members = [], {}
 
         # build a list of lambdas to implement the members.
-        for defn, name in fields:
-            name = "m" + name.title()
+        for defn, field_name in fields:
+            field_name = "m" + field_name.title()
             member_num = len(members)
-            members[name] = property(
+            members[field_name] = property(
                 lambda self, n=member_num: self._values[int(n)]
             )
             struct_defs.append(defn)
@@ -146,7 +146,7 @@ class PackedStruct(object):
         }
         cls_members.update(members)
 
-        return type(name, (PackedStruct,), cls_members)
+        return type(struct_name, (PackedStruct,), cls_members)
 
 
 class Converter(object):
