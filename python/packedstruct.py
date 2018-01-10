@@ -143,6 +143,7 @@ class PackedStruct(object):
         cls_members = {
             'STRUCT':  struct_def,
             'SIZE':    calcsize(struct_def),
+            'fields':  frozenset(members.keys())
         }
         cls_members.update(members)
 
