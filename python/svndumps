@@ -371,7 +371,7 @@ def dump_sparse(filename):
 
             # headers[0] will be the revision info, headers[1] will be
             # property info.
-            fake_data_base = "revision " + str(headers[0][0][1]) + "\n"
+            max_len, fake_data = 64, "SPARSE\n"
             for k, v, l in headers[0]:
                 print(k + ': ' + str(v))
             print()
@@ -380,29 +380,32 @@ def dump_sparse(filename):
 
             for data in headers[2:]:
                 if isinstance(data, Headers):
-                    fake_data = fake_data_base + data[0][1] + "\n"
                     hdrs = {}
-                    props_len = 0
+                    props_len, text_shrink, text_len = 0, 0, 0
                     for k, v, l in data:
                         hdrs[k] = v
-                        if k.endswith('-length'):
-                            if k == "Prop-content-length":
-                                props_len = v
-                            elif v > props_len:
-                                v = len(fake_data) + props_len
-                            else:
-                                v  = props_len
-                        elif k.endswith(('-md5', '-sha1')):
-                            continue
+                        if k == "Prop-content-length":
+                            v = props_len = int(v)
+                        elif k == "Text-content-length":
+                            v = text_len = int(v)
+                            if text_len > max_len:
+                                v = len(fake_data)
+                                text_shrink = text_len - v
+                        elif k == "Content-length":
+                            v = int(v)
+                            if text_shrink:
+                                v -= text_shrink
                         print(k + ': ' + str(v))
                     print()
                 else:
                     if props_len:
                         fh.seek(data[0])
                         print(fh.read(props_len), end='')
-                    if hdrs['Node-kind'] == 'file' and \
-                       hdrs['Content-length'] > props_len:
-                        print(fake_data)
+                    if hdrs['Node-kind'] == 'file':
+                        if text_shrink:
+                            print(fake_data)
+                        else:
+                            print(fh.read(text_len), end='')
                     print()
                     print()
 
@@ -520,8 +523,6 @@ def append_dumps(lhs, continuations, unlink=False, strict=False, force=False,
     :param dry_run: Enable to prevent any write/modify operations.
     """
 
-    assert not (rename and force)
-
     log_info("Appending %s to %s", continuations, lhs)
     if dry_run:
         log_note("Dry Run")
@@ -532,10 +533,10 @@ def append_dumps(lhs, continuations, unlink=False, strict=False, force=False,
     try:
         # Summarize the first file if the user didn't --force, or
         # if we are in strict mode.
-        if strict or (not force):
-            lhs_start = get_first_revn(lhs, lh)
-            log_note("%s: First rev: %d", lhs, lhs_start)
+        lhs_start = get_first_revn(lhs, lh)
+        log_note("%s: First rev: %d", lhs, lhs_start)
 
+        if strict or (not force):
             original_end = lhs_end = get_last_revn(lhs, lh)
             log_note("%s: Last rev: %d", lhs, lhs_end)
 
@@ -543,7 +544,7 @@ def append_dumps(lhs, continuations, unlink=False, strict=False, force=False,
 
         # In force mode, lhs_end has a special value
         if force:
-            lhs_end = FORCE_MODE
+            original_end, lhs_end = FORCE_MODE, FORCE_MODE
             log_info("%s: Forced append", lhs)
 
         for dump in continuations:
@@ -556,6 +557,9 @@ def append_dumps(lhs, continuations, unlink=False, strict=False, force=False,
             else:
                 msg = "%s: appended r%d-%d from %s"
                 log_info(msg, lhs, rhs_start, rhs_end, dump)
+                if original_end == FORCE_MODE:
+                    original_end = rhs_start - 1
+                lhs_end = rhs_end
 
             if unlink:
                 log_note("Unlink: %s", dump)
@@ -636,7 +640,8 @@ def parse_args(argv):
         assert args.buf_size > 0
 
         if args.force and args.rename:
-            raise UsageError("Cannot use --rename and --force together")
+            msg = "using --rename + --force may produce non-contiguous dumps"
+            logging.warn(msg)
 
         append_dumps(args.base, args.continuations,
                      buffer_size=args.buf_size,
