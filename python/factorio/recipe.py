@@ -125,4 +125,4 @@ def load_all_recipes(factorio_path):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
 
-    print(json.dumps(load_all_recipes(r"C:\\Program Files (x86)\\steam\\steamapps\common\Factorio"), indent=4))
+    print(json.dumps(load_all_recipes("C:\\Program Files (x86)\\steam\\steamapps\\common\\Factorio"), indent=4))
