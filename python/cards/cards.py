@@ -5,7 +5,23 @@ from .suites import Suites
 from .faces  import Faces
 
 
-class Cards:
+class Card(object):
+    """ Describe an individual card. """
+
+    def __init__(self, suite=None, face=None, label=None):
+        self.suite, self.face, self.label = suite, face, label
+        self.index = Cards.INDEX.index(label)
+        self.color = Suites.color(suite)
+
+    def __str__(self):
+        return self.label
+
+    def __repr__(self):
+        return "Card(suite=%d, face=%d, label='%s')" % (
+                self.suite, self.face, self.label
+        )
+
+class Cards(object):
     """ Enumerate all available cards. """
 
     INDEX = tuple(f+s for f, s in iter_product(Faces.INDEX, Suites.INDEX))
@@ -17,6 +33,9 @@ class Cards:
     images = None
     """ If images have been provided, store here. """
 
+    __cards = dict()
+    """ Registry of known cards. """
+
     @staticmethod
     def index(card):
         """ Return the index of given card representation """
@@ -25,21 +44,18 @@ class Cards:
     @staticmethod
     def label(index):
         """ Map a numeric value to a card label. """
-
         return Cards.INDEX[index]
 
-
-class Card(object):
-    """ Describe an individual card. """
-
-    def __init__(self, suite=None, face=None, label=None):
-        if suite and face:
-            self.suite = suite
-            self.face = face
+    @staticmethod
+    def get_card(suite=None, face=None, label=None):
+        if label and suite is None and face is None:
+            face, suite = Faces.index(label[:-1]), Suites.index(label[-1:])
         elif label:
-            self.face, self.suite = Faces.index(label[:-1]), Suites.index(label[-1:])
+            raise ValueError("Invalid arguments for get_card()")
         else:
-            raise ValueError("Invalid arguments for Card()")
-        self.label = Faces.label(self.face) + Suites.label(self.suite)
-        self.index = Cards.INDEX.index(self.label)
-        self.color = Suites.color(self.suite)
+            label = Faces.label(face) + Suites.label(suite)
+        card = Cards.__cards.get(label)
+        if not card:
+            card = Cards.__cards[label] = Card(suite, face, label)
+        return card
+

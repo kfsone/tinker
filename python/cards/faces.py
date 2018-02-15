@@ -35,6 +35,4 @@ class Faces:
     @staticmethod
     def label(face):
         """ Return the representative label for this face. """
-
-        # Card numbers are 1-based.
-        return Faces.INDEX[face - 1]
+        return Faces.INDEX[face - 1]    # Card numbers are 1-based.
