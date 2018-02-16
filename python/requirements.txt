@@ -1,0 +1,10 @@
+setuptools
+pip
+wheel
+virtualenv
+Cython
+numpy
+scipy
+opencv_python
+requests
+
