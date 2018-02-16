@@ -31,14 +31,14 @@ class ParseError(RuntimeError):
 def load_file_recipes(fh, enabled_only=False, expensive=False, logger=logger):
     """
     Load all the recipes from a given file handle.
-    
+
     :param enabled_only: Set True to limit to only enabled recipes.
     :param expensive: Set True to use 'expensive' configurations.
     :return: dict(name -> {recipe})
     """
 
     logger.info("Loading recipes from %s", fh.name)
-    
+
     lua_text = fh.read().strip()
     logger.debug("Loaded %d bytes", len(lua_text))
 
@@ -104,10 +104,10 @@ def load_file_recipes(fh, enabled_only=False, expensive=False, logger=logger):
 
 
 def load_all_recipes(factorio_path, logger=logger):
-    
+
     if not os.access(factorio_path, os.R_OK):
         raise ValueError("%s: No access or no such folder." % factorio_path)
-    
+
     # Iterate across all the files we find in the RECIPE_LOCATION.
     recipes_path = os.path.join(factorio_path, RECIPE_LOCATION)
     logger.debug("recipes path: %s", recipes_path)
@@ -150,21 +150,32 @@ def dump_requirements(recipes, requests):
 
     requests = set(requests)
     requirements = collections.defaultdict(int)
-    for request in requests:
-        recipe = recipes.get(request.lower())
+    uses = collections.defaultdict(set)
+
+    for request in (r.lower() for r in requests):
+        recipe = recipes.get(request)
         if not recipe:
             raise ValueError("Unknown recipe: " + request)
-        ingredients = list(recipe['ingredients'])
+
+        ingredients = list((ing, request) for ing in recipe['ingredients'])
+
         while ingredients:
-            ingredient, quantity = ingredients.pop(0)
+            (ingredient, quantity), use = ingredients.pop(0)
+            uses[ingredient].add(use)
             ingredient_recipe = recipes.get(ingredient)
             if ingredient_recipe:
                 for sub_ingredient, sub_quantity in ingredient_recipe['ingredients']:
-                    ingredients.append((sub_ingredient, sub_quantity * quantity))
+                    ingredients.append(((sub_ingredient, sub_quantity * quantity), ingredient))
             requirements[ingredient] += quantity
 
-    for item, quantity in requirements.items():
-        print("%5d %s" % (quantity, item))
+    keys = list(requirements.keys())
+    keys.sort(key=lambda k: k)
+    keys.sort(key=lambda k: requirements[k], reverse=True)
+    keys.sort(key=lambda k: len(uses[k]), reverse=True)
+
+    print("%-5s %-5s %-40s %s" % ("Qty", "#Use", "Item", "Uses"))
+    for item in keys:
+        print("%5d %5d %-40s %s" % (requirements[item], len(uses[item]), item, ', '.join(uses[item])))
 
 
 if __name__ == "__main__":
