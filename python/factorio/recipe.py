@@ -2,13 +2,18 @@
 Factorio's recipe tree is written in Lua, we want it in Python.
 """
 
+import argparse
 import collections
 import glob
 import json
 import logging
 import os
+import sys
 
-from slpp import slpp
+try:
+    from .slpp import slpp
+except ImportError:
+    from slpp import slpp
 
 # Subdirectory within Factorio where we expect to find recipe files.
 RECIPE_LOCATION = os.path.join("data", "base", "prototypes", "recipe")
@@ -44,7 +49,7 @@ def load_file_recipes(fh, enabled_only=False, expensive=False, logger=logger):
 
     # Strip the non-table wrapper.
     if not lua_text.startswith(RECIPE_PREFIX) or not lua_text.endswith(RECIPE_SUFFIX):
-        logger.warn("%s does not appear to be a recipe definition file.", fh.name)
+        logger.warning("%s does not appear to be a recipe definition file.", fh.name)
         return {}
 
     lua_table = lua_text[len(RECIPE_PREFIX):-len(RECIPE_SUFFIX)].strip()
@@ -61,7 +66,7 @@ def load_file_recipes(fh, enabled_only=False, expensive=False, logger=logger):
 
         name = table.get('name').lower()
         if not name:
-            logger.warn("Malformed entry: %s", table)
+            logger.warning("Malformed entry: %s", table)
             continue
         own_version['name'] = name
 
@@ -88,10 +93,18 @@ def load_file_recipes(fh, enabled_only=False, expensive=False, logger=logger):
 
         ingredients = table.get('ingredients')
         if not ingredients:
-            logger.warn("Entry with no ingredients: %s", table)
+            logger.warning("Entry with no ingredients: %s", table)
             continue
-        ingredients = tuple(tuple(e) for e in ingredients)
-        own_version['ingredients'] = ingredients
+        own_version['ingredients'] = {}
+        for entry in ingredients:
+            if isinstance(entry, (tuple, list)):
+                assert len(entry) == 2
+                assert isinstance(entry[1], int)
+                own_version['ingredients'][entry[0]] = entry[1]
+            else:
+                assert isinstance(entry, dict)
+                assert len(entry) == 3
+                own_version['ingredients'][entry['name']] = int(entry['amount'])
 
         if 'energy_required' in table:
             own_version['energy_required'] = table['energy_required']
@@ -136,7 +149,7 @@ def load_all_recipes(factorio_path, logger=logger):
             # Check for any duplicates.
             new_keys, old_keys = frozenset(new_recipes.keys()), frozenset(recipes.keys())
             for dupe in new_keys.intersection(old_keys):
-                logger.warn("'%s' redefined in %s", dupe, filename)
+                logger.warning("'%s' redefined in %s", dupe, filename)
 
             # Add the recipes to the main dictionary.
             recipes.update(new_recipes)
@@ -179,8 +192,6 @@ def dump_requirements(recipes, requests):
 
 
 if __name__ == "__main__":
-    import argparse
-    import sys
 
     parser = argparse.ArgumentParser("Recipe translator")
     parser.add_argument("--verbose", "-v", help="Increase verbosity.", default=0, action="count")
