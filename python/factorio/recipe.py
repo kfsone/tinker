@@ -33,6 +33,54 @@ class ParseError(RuntimeError):
     pass
 
 
+class Resource(object):
+    """ Raw or manufactured item that can be constructed or used to construct. """
+
+    def __init__(self, name, recipe):
+        self.name = name
+        self.recipe = recipe
+        self.inputs = {}
+        self.outputs = {}
+
+    def __repr__(self):
+        return '%s("%s")' % (self.__class__.__name__, self.name)
+
+    def __hash__(self):
+        return hash(self.name)
+
+
+class RawResource(Resource):
+    def __init__(self, name):
+        super().__init__(name, None)
+
+
+class Manufactured(Resource):
+    def __init__(self, name, recipe):
+        super().__init__(name, recipe)
+
+
+class Production(object):
+
+    def __init__(self, resource_in, quantity, manufactured):
+        assert isinstance(resource_in,  Resource)
+        assert isinstance(manufactured, Manufactured)
+
+        self.resource_in = resource_in
+        self.quantity = quantity
+        self.manufactured = manufactured
+
+        assert manufactured.name not in resource_in.inputs
+        assert manufactured.name not in resource_in.outputs
+        assert resource_in.name not in manufactured.inputs
+        assert resource_in.name not in manufactured.outputs
+
+        resource_in.outputs[manufactured.name] = self
+        manufactured.inputs[resource_in.name] = self
+
+    def __repr__(self):
+        return "Production('%s', %d, '%s')" % (self.resource_in.name, self.quantity, self.manufactured.name)
+
+
 def load_file_recipes(fh, enabled_only=False, expensive=False, logger=logger):
     """
     Load all the recipes from a given file handle.
@@ -161,23 +209,23 @@ def load_all_recipes(factorio_path, logger=logger):
 
 def dump_requirements(recipes, requests):
 
-    requests = set(requests)
+    requests = set(r.lower() for r in requests)
     requirements = collections.defaultdict(int)
     uses = collections.defaultdict(set)
 
-    for request in (r.lower() for r in requests):
+    for request in requests:
         recipe = recipes.get(request)
         if not recipe:
             raise ValueError("Unknown recipe: " + request)
 
-        ingredients = list((ing, request) for ing in recipe['ingredients'])
+        ingredients = list(((ing, qty), request) for (ing, qty) in recipe['ingredients'].items())
 
         while ingredients:
             (ingredient, quantity), use = ingredients.pop(0)
             uses[ingredient].add(use)
             ingredient_recipe = recipes.get(ingredient)
             if ingredient_recipe:
-                for sub_ingredient, sub_quantity in ingredient_recipe['ingredients']:
+                for (sub_ingredient, sub_quantity) in ingredient_recipe['ingredients'].items():
                     ingredients.append(((sub_ingredient, sub_quantity * quantity), ingredient))
             requirements[ingredient] += quantity
 
@@ -189,6 +237,73 @@ def dump_requirements(recipes, requests):
     print("%-5s %-5s %-40s %s" % ("Qty", "#Use", "Item", "Uses"))
     for item in keys:
         print("%5d %5d %-40s %s" % (requirements[item], len(uses[item]), item, ', '.join(uses[item])))
+
+
+def build_graph(recipes, goals):
+    """ Builds a graph of productions to produce a set of goals. """
+
+    resources = {}
+    productions = dict()
+    produces = set()
+    consumes = set()
+
+    demands = [(goal, 1) for goal in goals]
+    while demands:
+
+        product_name, quantity = demands.pop()
+
+        produces.add(product_name)
+        product_recipe = recipes[product_name]
+        product_resource = resources.get(product_name, Manufactured(product_name, product_recipe))
+
+        for ing_name, ing_quantity in product_recipe['ingredients'].items():
+
+            consumes.add(ing_name)
+
+            ing_resource = resources.get(ing_name)
+            if not ing_resource:
+                ing_recipe = recipes.get(ing_name)
+                if ing_recipe:
+                    ing_resource = Manufactured(ing_name, ing_recipe)
+                else:
+                    ing_resource = RawResource(ing_name)
+                resources[ing_name] = ing_resource
+
+            if (ing_resource, product_resource) not in productions:
+                productions[ing_resource, product_resource] = Production(ing_resource, ing_quantity, product_resource)
+
+            if not isinstance(ing_resource, RawResource):
+                demands.append((ing_name, quantity * ing_quantity))
+
+    outputs = frozenset((produces - consumes) | set(goals))
+    assert outputs == set(goals)
+    inputs = frozenset(consumes - produces)
+
+    ready = set(resources[k] for k in inputs)
+    rounds = []
+
+    while True:
+        outputs = collections.defaultdict(set)
+        for pin, pout in productions:
+            if pin not in ready:
+                continue
+            if pout in ready:
+                continue
+            if not all(ing.resource_in in ready for ing in pout.inputs.values()):
+                continue
+            outputs[pout].add(pin)
+        if not outputs:
+            break
+        rounds.append(dict(outputs))
+        ready.update(outputs.keys())
+
+    return {
+        'inputs': inputs,
+        'outputs': outputs,
+        'rounds': rounds,
+        'resources': resources,
+        'productions': productions,
+    }
 
 
 if __name__ == "__main__":
@@ -218,4 +333,4 @@ if __name__ == "__main__":
         args.json.write(json.dumps(recipes, indent=4))
 
     if args.make:
-        dump_requirements(recipes, args.make)
+        project = dump_requirements(recipes, args.make)
