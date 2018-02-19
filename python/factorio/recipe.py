@@ -12,21 +12,24 @@ import sys
 
 try:
     from .slpp import slpp
-except ImportError:
+except (ValueError, ImportError):
     from slpp import slpp
 
 # Subdirectory within Factorio where we expect to find recipe files.
 RECIPE_LOCATION = os.path.join("data", "base", "prototypes", "recipe")
 
-DEFAULT_PATH="C:\\Program Files (x86)\\steam\\steamapps\\common\\Factorio"
+if sys.platform == 'darwin':
+    DEFAULT_PATH = os.path.expanduser("~/Library/Application Support/Steam/steamapps/common/Factorio/factorio.app/Contents")
+else:  ###TODO: Linux, kthxbai
+    DEFAULT_PATH="C:\\Program Files (x86)\\steam\\steamapps\\common\\Factorio"
 
 # What we expect scripts to begin with.
 RECIPE_PREFIX   = "data:extend("
 # What we expect scripts to end with.
 RECIPE_SUFFIX   = ")"
 
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("recipe")
-logger.setLevel(logging.DEBUG)
 
 
 class ParseError(RuntimeError):
@@ -310,7 +313,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser("Recipe translator")
     parser.add_argument("--verbose", "-v", help="Increase verbosity.", default=0, action="count")
-    parser.add_argument("--json", help="Write json dump", required=False, type=argparse.FileType('w'))
+    parser.add_argument("--json", help="Write json dump", required=False, type=str)
     parser.add_argument("--path", help="Path to the Factorio folder", default=DEFAULT_PATH, type=str)
     parser.add_argument("--make", help="Add an item to the request list", action="append")
 
@@ -327,10 +330,18 @@ if __name__ == "__main__":
     elif args.verbose >= 2:
         logger.setLevel(logging.DEBUG)
 
-    recipes = load_all_recipes(args.path)
+    if args.path.endswith('.json'):
+        if args.json:
+            raise RuntimeError("--json is not compatbile with specifying a .json input source")
+        with open(args.path, 'r') as fh:
+            recipes = json.loads(fh.read())
+    else:
+        recipes = load_all_recipes(args.path)
 
     if args.json:
-        args.json.write(json.dumps(recipes, indent=4))
+        with open(args.json, 'w') as fh:
+            fh.write(json.dumps(recipes, indent=4))
 
     if args.make:
         project = dump_requirements(recipes, args.make)
+

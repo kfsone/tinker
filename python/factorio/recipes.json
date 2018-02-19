@@ -1,3067 +1,1580 @@
 {
     "piercing-rounds-magazine": {
         "name": "piercing-rounds-magazine",
-        "ingredients": [
-            [
-                "firearm-magazine",
-                1
-            ],
-            [
-                "steel-plate",
-                1
-            ],
-            [
-                "copper-plate",
-                5
-            ]
-        ],
+        "ingredients": {
+            "firearm-magazine": 1,
+            "steel-plate": 1,
+            "copper-plate": 5
+        },
         "energy_required": 3
     },
     "uranium-rounds-magazine": {
         "name": "uranium-rounds-magazine",
-        "ingredients": [
-            [
-                "piercing-rounds-magazine",
-                1
-            ],
-            [
-                "uranium-238",
-                1
-            ]
-        ],
+        "ingredients": {
+            "piercing-rounds-magazine": 1,
+            "uranium-238": 1
+        },
         "energy_required": 10
     },
     "rocket": {
         "name": "rocket",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                1
-            ],
-            [
-                "explosives",
-                1
-            ],
-            [
-                "iron-plate",
-                2
-            ]
-        ],
+        "ingredients": {
+            "electronic-circuit": 1,
+            "explosives": 1,
+            "iron-plate": 2
+        },
         "energy_required": 8
     },
     "explosive-rocket": {
         "name": "explosive-rocket",
-        "ingredients": [
-            [
-                "rocket",
-                1
-            ],
-            [
-                "explosives",
-                2
-            ]
-        ],
+        "ingredients": {
+            "rocket": 1,
+            "explosives": 2
+        },
         "energy_required": 8
     },
     "atomic-bomb": {
         "name": "atomic-bomb",
-        "ingredients": [
-            [
-                "processing-unit",
-                20
-            ],
-            [
-                "explosives",
-                10
-            ],
-            [
-                "uranium-235",
-                30
-            ]
-        ],
+        "ingredients": {
+            "processing-unit": 20,
+            "explosives": 10,
+            "uranium-235": 30
+        },
         "energy_required": 50
     },
     "shotgun-shell": {
         "name": "shotgun-shell",
-        "ingredients": [
-            [
-                "copper-plate",
-                2
-            ],
-            [
-                "iron-plate",
-                2
-            ]
-        ],
+        "ingredients": {
+            "copper-plate": 2,
+            "iron-plate": 2
+        },
         "energy_required": 3
     },
     "piercing-shotgun-shell": {
         "name": "piercing-shotgun-shell",
-        "ingredients": [
-            [
-                "shotgun-shell",
-                2
-            ],
-            [
-                "copper-plate",
-                5
-            ],
-            [
-                "steel-plate",
-                2
-            ]
-        ],
+        "ingredients": {
+            "shotgun-shell": 2,
+            "copper-plate": 5,
+            "steel-plate": 2
+        },
         "energy_required": 8
     },
     "railgun-dart": {
         "name": "railgun-dart",
-        "ingredients": [
-            [
-                "steel-plate",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 5,
+            "electronic-circuit": 5
+        },
         "energy_required": 8
     },
     "cannon-shell": {
         "name": "cannon-shell",
-        "ingredients": [
-            [
-                "steel-plate",
-                2
-            ],
-            [
-                "plastic-bar",
-                2
-            ],
-            [
-                "explosives",
-                1
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 2,
+            "plastic-bar": 2,
+            "explosives": 1
+        },
         "energy_required": 8
     },
     "explosive-cannon-shell": {
         "name": "explosive-cannon-shell",
-        "ingredients": [
-            [
-                "steel-plate",
-                2
-            ],
-            [
-                "plastic-bar",
-                2
-            ],
-            [
-                "explosives",
-                2
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 2,
+            "plastic-bar": 2,
+            "explosives": 2
+        },
         "energy_required": 8
     },
     "uranium-cannon-shell": {
         "name": "uranium-cannon-shell",
-        "ingredients": [
-            [
-                "cannon-shell",
-                1
-            ],
-            [
-                "uranium-238",
-                1
-            ]
-        ],
+        "ingredients": {
+            "cannon-shell": 1,
+            "uranium-238": 1
+        },
         "energy_required": 12
     },
     "explosive-uranium-cannon-shell": {
         "name": "explosive-uranium-cannon-shell",
-        "ingredients": [
-            [
-                "explosive-cannon-shell",
-                1
-            ],
-            [
-                "uranium-238",
-                1
-            ]
-        ],
+        "ingredients": {
+            "explosive-cannon-shell": 1,
+            "uranium-238": 1
+        },
         "energy_required": 12
     },
     "flamethrower-ammo": {
         "name": "flamethrower-ammo",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 5,
+            "light-oil": 50,
+            "heavy-oil": 50
+        },
         "energy_required": 6
     },
     "poison-capsule": {
         "name": "poison-capsule",
-        "ingredients": [
-            [
-                "steel-plate",
-                3
-            ],
-            [
-                "electronic-circuit",
-                3
-            ],
-            [
-                "coal",
-                10
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 3,
+            "electronic-circuit": 3,
+            "coal": 10
+        },
         "energy_required": 8
     },
     "slowdown-capsule": {
         "name": "slowdown-capsule",
-        "ingredients": [
-            [
-                "steel-plate",
-                2
-            ],
-            [
-                "electronic-circuit",
-                2
-            ],
-            [
-                "coal",
-                5
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 2,
+            "electronic-circuit": 2,
+            "coal": 5
+        },
         "energy_required": 8
     },
     "grenade": {
         "name": "grenade",
-        "ingredients": [
-            [
-                "iron-plate",
-                5
-            ],
-            [
-                "coal",
-                10
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 5,
+            "coal": 10
+        },
         "energy_required": 8
     },
     "cluster-grenade": {
         "name": "cluster-grenade",
-        "ingredients": [
-            [
-                "grenade",
-                7
-            ],
-            [
-                "explosives",
-                5
-            ],
-            [
-                "steel-plate",
-                5
-            ]
-        ],
+        "ingredients": {
+            "grenade": 7,
+            "explosives": 5,
+            "steel-plate": 5
+        },
         "energy_required": 8
     },
     "defender-capsule": {
         "name": "defender-capsule",
-        "ingredients": [
-            [
-                "piercing-rounds-magazine",
-                1
-            ],
-            [
-                "electronic-circuit",
-                2
-            ],
-            [
-                "iron-gear-wheel",
-                3
-            ]
-        ],
+        "ingredients": {
+            "piercing-rounds-magazine": 1,
+            "electronic-circuit": 2,
+            "iron-gear-wheel": 3
+        },
         "energy_required": 8
     },
     "distractor-capsule": {
         "name": "distractor-capsule",
-        "ingredients": [
-            [
-                "defender-capsule",
-                4
-            ],
-            [
-                "advanced-circuit",
-                3
-            ]
-        ],
+        "ingredients": {
+            "defender-capsule": 4,
+            "advanced-circuit": 3
+        },
         "energy_required": 15
     },
     "destroyer-capsule": {
         "name": "destroyer-capsule",
-        "ingredients": [
-            [
-                "distractor-capsule",
-                4
-            ],
-            [
-                "speed-module",
-                1
-            ]
-        ],
+        "ingredients": {
+            "distractor-capsule": 4,
+            "speed-module": 1
+        },
         "energy_required": 15
     },
     "discharge-defense-remote": {
         "name": "discharge-defense-remote",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                1
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 1
+        }
     },
     "copper-plate": {
         "name": "copper-plate",
-        "ingredients": [
-            [
-                "copper-ore",
-                1
-            ]
-        ],
+        "ingredients": {
+            "copper-ore": 1
+        },
         "energy_required": 3.5
     },
     "iron-plate": {
         "name": "iron-plate",
-        "ingredients": [
-            [
-                "iron-ore",
-                1
-            ]
-        ],
+        "ingredients": {
+            "iron-ore": 1
+        },
         "energy_required": 3.5
     },
     "stone-brick": {
         "name": "stone-brick",
-        "ingredients": [
-            [
-                "stone",
-                2
-            ]
-        ],
+        "ingredients": {
+            "stone": 2
+        },
         "energy_required": 3.5
     },
     "wood": {
         "name": "wood",
-        "ingredients": [
-            [
-                "raw-wood",
-                1
-            ]
-        ]
+        "ingredients": {
+            "raw-wood": 1
+        }
     },
     "wooden-chest": {
         "name": "wooden-chest",
-        "ingredients": [
-            [
-                "wood",
-                4
-            ]
-        ]
+        "ingredients": {
+            "wood": 4
+        }
     },
     "iron-stick": {
         "name": "iron-stick",
-        "ingredients": [
-            [
-                "iron-plate",
-                1
-            ]
-        ]
+        "ingredients": {
+            "iron-plate": 1
+        }
     },
     "iron-axe": {
         "name": "iron-axe",
-        "ingredients": [
-            [
-                "iron-stick",
-                2
-            ],
-            [
-                "iron-plate",
-                3
-            ]
-        ]
+        "ingredients": {
+            "iron-stick": 2,
+            "iron-plate": 3
+        }
     },
     "stone-furnace": {
         "name": "stone-furnace",
-        "ingredients": [
-            [
-                "stone",
-                5
-            ]
-        ]
+        "ingredients": {
+            "stone": 5
+        }
     },
     "boiler": {
         "name": "boiler",
-        "ingredients": [
-            [
-                "stone-furnace",
-                1
-            ],
-            [
-                "pipe",
-                4
-            ]
-        ]
+        "ingredients": {
+            "stone-furnace": 1,
+            "pipe": 4
+        }
     },
     "steam-engine": {
         "name": "steam-engine",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                8
-            ],
-            [
-                "pipe",
-                5
-            ],
-            [
-                "iron-plate",
-                10
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 8,
+            "pipe": 5,
+            "iron-plate": 10
+        }
     },
     "iron-gear-wheel": {
         "name": "iron-gear-wheel",
-        "ingredients": [
-            [
-                "iron-plate",
-                2
-            ]
-        ]
+        "ingredients": {
+            "iron-plate": 2
+        }
     },
     "electronic-circuit": {
         "name": "electronic-circuit",
-        "ingredients": [
-            [
-                "iron-plate",
-                1
-            ],
-            [
-                "copper-cable",
-                3
-            ]
-        ]
+        "ingredients": {
+            "iron-plate": 1,
+            "copper-cable": 3
+        }
     },
     "transport-belt": {
         "name": "transport-belt",
-        "ingredients": [
-            [
-                "iron-plate",
-                1
-            ],
-            [
-                "iron-gear-wheel",
-                1
-            ]
-        ]
+        "ingredients": {
+            "iron-plate": 1,
+            "iron-gear-wheel": 1
+        }
     },
     "electric-mining-drill": {
         "name": "electric-mining-drill",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                3
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "iron-plate",
-                10
-            ]
-        ],
+        "ingredients": {
+            "electronic-circuit": 3,
+            "iron-gear-wheel": 5,
+            "iron-plate": 10
+        },
         "energy_required": 2
     },
     "burner-mining-drill": {
         "name": "burner-mining-drill",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                3
-            ],
-            [
-                "stone-furnace",
-                1
-            ],
-            [
-                "iron-plate",
-                3
-            ]
-        ],
+        "ingredients": {
+            "iron-gear-wheel": 3,
+            "stone-furnace": 1,
+            "iron-plate": 3
+        },
         "energy_required": 2
     },
     "inserter": {
         "name": "inserter",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                1
-            ],
-            [
-                "iron-gear-wheel",
-                1
-            ],
-            [
-                "iron-plate",
-                1
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 1,
+            "iron-gear-wheel": 1,
+            "iron-plate": 1
+        }
     },
     "burner-inserter": {
         "name": "burner-inserter",
-        "ingredients": [
-            [
-                "iron-plate",
-                1
-            ],
-            [
-                "iron-gear-wheel",
-                1
-            ]
-        ]
+        "ingredients": {
+            "iron-plate": 1,
+            "iron-gear-wheel": 1
+        }
     },
     "pipe": {
         "name": "pipe",
-        "ingredients": [
-            [
-                "iron-plate",
-                1
-            ]
-        ]
+        "ingredients": {
+            "iron-plate": 1
+        }
     },
     "offshore-pump": {
         "name": "offshore-pump",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                2
-            ],
-            [
-                "pipe",
-                1
-            ],
-            [
-                "iron-gear-wheel",
-                1
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 2,
+            "pipe": 1,
+            "iron-gear-wheel": 1
+        }
     },
     "copper-cable": {
         "name": "copper-cable",
-        "ingredients": [
-            [
-                "copper-plate",
-                1
-            ]
-        ]
+        "ingredients": {
+            "copper-plate": 1
+        }
     },
     "small-electric-pole": {
         "name": "small-electric-pole",
-        "ingredients": [
-            [
-                "wood",
-                2
-            ],
-            [
-                "copper-cable",
-                2
-            ]
-        ]
+        "ingredients": {
+            "wood": 2,
+            "copper-cable": 2
+        }
     },
     "pistol": {
         "name": "pistol",
-        "ingredients": [
-            [
-                "copper-plate",
-                5
-            ],
-            [
-                "iron-plate",
-                5
-            ]
-        ],
+        "ingredients": {
+            "copper-plate": 5,
+            "iron-plate": 5
+        },
         "energy_required": 5
     },
     "submachine-gun": {
         "name": "submachine-gun",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "copper-plate",
-                5
-            ],
-            [
-                "iron-plate",
-                10
-            ]
-        ],
+        "ingredients": {
+            "iron-gear-wheel": 10,
+            "copper-plate": 5,
+            "iron-plate": 10
+        },
         "energy_required": 10
     },
     "firearm-magazine": {
         "name": "firearm-magazine",
-        "ingredients": [
-            [
-                "iron-plate",
-                4
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 4
+        },
         "energy_required": 1
     },
     "light-armor": {
         "name": "light-armor",
-        "ingredients": [
-            [
-                "iron-plate",
-                40
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 40
+        },
         "energy_required": 3
     },
     "radar": {
         "name": "radar",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                5
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "iron-plate",
-                10
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 5,
+            "iron-gear-wheel": 5,
+            "iron-plate": 10
+        }
     },
     "small-lamp": {
         "name": "small-lamp",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                1
-            ],
-            [
-                "iron-stick",
-                3
-            ],
-            [
-                "iron-plate",
-                1
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 1,
+            "iron-stick": 3,
+            "iron-plate": 1
+        }
     },
     "pipe-to-ground": {
         "name": "pipe-to-ground",
-        "ingredients": [
-            [
-                "pipe",
-                10
-            ],
-            [
-                "iron-plate",
-                5
-            ]
-        ]
+        "ingredients": {
+            "pipe": 10,
+            "iron-plate": 5
+        }
     },
     "assembling-machine-1": {
         "name": "assembling-machine-1",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                3
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "iron-plate",
-                9
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 3,
+            "iron-gear-wheel": 5,
+            "iron-plate": 9
+        }
     },
     "repair-pack": {
         "name": "repair-pack",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                2
-            ],
-            [
-                "iron-gear-wheel",
-                2
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 2,
+            "iron-gear-wheel": 2
+        }
     },
     "gun-turret": {
         "name": "gun-turret",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "copper-plate",
-                10
-            ],
-            [
-                "iron-plate",
-                20
-            ]
-        ],
+        "ingredients": {
+            "iron-gear-wheel": 10,
+            "copper-plate": 10,
+            "iron-plate": 20
+        },
         "energy_required": 8
     },
     "night-vision-equipment": {
         "name": "night-vision-equipment",
-        "ingredients": [
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "steel-plate",
-                10
-            ]
-        ],
+        "ingredients": {
+            "advanced-circuit": 5,
+            "steel-plate": 10
+        },
         "energy_required": 10
     },
     "energy-shield-equipment": {
         "name": "energy-shield-equipment",
-        "ingredients": [
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "steel-plate",
-                10
-            ]
-        ],
+        "ingredients": {
+            "advanced-circuit": 5,
+            "steel-plate": 10
+        },
         "energy_required": 10
     },
     "energy-shield-mk2-equipment": {
         "name": "energy-shield-mk2-equipment",
-        "ingredients": [
-            [
-                "energy-shield-equipment",
-                10
-            ],
-            [
-                "processing-unit",
-                10
-            ]
-        ],
+        "ingredients": {
+            "energy-shield-equipment": 10,
+            "processing-unit": 10
+        },
         "energy_required": 10
     },
     "battery-equipment": {
         "name": "battery-equipment",
-        "ingredients": [
-            [
-                "battery",
-                5
-            ],
-            [
-                "steel-plate",
-                10
-            ]
-        ],
+        "ingredients": {
+            "battery": 5,
+            "steel-plate": 10
+        },
         "energy_required": 10
     },
     "battery-mk2-equipment": {
         "name": "battery-mk2-equipment",
-        "ingredients": [
-            [
-                "battery-equipment",
-                10
-            ],
-            [
-                "processing-unit",
-                20
-            ]
-        ],
+        "ingredients": {
+            "battery-equipment": 10,
+            "processing-unit": 20
+        },
         "energy_required": 10
     },
     "solar-panel-equipment": {
         "name": "solar-panel-equipment",
-        "ingredients": [
-            [
-                "solar-panel",
-                5
-            ],
-            [
-                "advanced-circuit",
-                1
-            ],
-            [
-                "steel-plate",
-                5
-            ]
-        ],
+        "ingredients": {
+            "solar-panel": 5,
+            "advanced-circuit": 1,
+            "steel-plate": 5
+        },
         "energy_required": 10
     },
     "fusion-reactor-equipment": {
         "name": "fusion-reactor-equipment",
-        "ingredients": [
-            [
-                "processing-unit",
-                250
-            ]
-        ],
+        "ingredients": {
+            "processing-unit": 250
+        },
         "energy_required": 10
     },
     "personal-laser-defense-equipment": {
         "name": "personal-laser-defense-equipment",
-        "ingredients": [
-            [
-                "processing-unit",
-                1
-            ],
-            [
-                "steel-plate",
-                5
-            ],
-            [
-                "laser-turret",
-                5
-            ]
-        ],
+        "ingredients": {
+            "processing-unit": 1,
+            "steel-plate": 5,
+            "laser-turret": 5
+        },
         "energy_required": 10
     },
     "discharge-defense-equipment": {
         "name": "discharge-defense-equipment",
-        "ingredients": [
-            [
-                "processing-unit",
-                5
-            ],
-            [
-                "steel-plate",
-                20
-            ],
-            [
-                "laser-turret",
-                10
-            ]
-        ],
+        "ingredients": {
+            "processing-unit": 5,
+            "steel-plate": 20,
+            "laser-turret": 10
+        },
         "energy_required": 10
     },
     "exoskeleton-equipment": {
         "name": "exoskeleton-equipment",
-        "ingredients": [
-            [
-                "processing-unit",
-                10
-            ],
-            [
-                "electric-engine-unit",
-                30
-            ],
-            [
-                "steel-plate",
-                20
-            ]
-        ],
+        "ingredients": {
+            "processing-unit": 10,
+            "electric-engine-unit": 30,
+            "steel-plate": 20
+        },
         "energy_required": 10
     },
     "personal-roboport-equipment": {
         "name": "personal-roboport-equipment",
-        "ingredients": [
-            [
-                "advanced-circuit",
-                10
-            ],
-            [
-                "iron-gear-wheel",
-                40
-            ],
-            [
-                "steel-plate",
-                20
-            ],
-            [
-                "battery",
-                45
-            ]
-        ],
+        "ingredients": {
+            "advanced-circuit": 10,
+            "iron-gear-wheel": 40,
+            "steel-plate": 20,
+            "battery": 45
+        },
         "energy_required": 10
     },
     "personal-roboport-mk2-equipment": {
         "name": "personal-roboport-mk2-equipment",
-        "ingredients": [
-            [
-                "personal-roboport-equipment",
-                5
-            ],
-            [
-                "processing-unit",
-                100
-            ]
-        ],
+        "ingredients": {
+            "personal-roboport-equipment": 5,
+            "processing-unit": 100
+        },
         "energy_required": 20
     },
     "basic-oil-processing": {
         "name": "basic-oil-processing",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "crude-oil": 100
+        },
         "energy_required": 5
     },
     "advanced-oil-processing": {
         "name": "advanced-oil-processing",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "water": 50,
+            "crude-oil": 100
+        },
         "energy_required": 5
     },
     "coal-liquefaction": {
         "name": "coal-liquefaction",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "coal": 10,
+            "heavy-oil": 25,
+            "steam": 50
+        },
         "energy_required": 5
     },
     "heavy-oil-cracking": {
         "name": "heavy-oil-cracking",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "water": 30,
+            "heavy-oil": 40
+        },
         "energy_required": 3
     },
     "light-oil-cracking": {
         "name": "light-oil-cracking",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "water": 30,
+            "light-oil": 30
+        },
         "energy_required": 3
     },
     "sulfuric-acid": {
         "name": "sulfuric-acid",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "sulfur": 5,
+            "iron-plate": 1,
+            "water": 100
+        },
         "energy_required": 1
     },
     "plastic-bar": {
         "name": "plastic-bar",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "petroleum-gas": 20,
+            "coal": 1
+        },
         "energy_required": 1
     },
     "solid-fuel-from-light-oil": {
         "name": "solid-fuel-from-light-oil",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "light-oil": 10
+        },
         "energy_required": 3
     },
     "solid-fuel-from-petroleum-gas": {
         "name": "solid-fuel-from-petroleum-gas",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "petroleum-gas": 20
+        },
         "energy_required": 3
     },
     "solid-fuel-from-heavy-oil": {
         "name": "solid-fuel-from-heavy-oil",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "heavy-oil": 20
+        },
         "energy_required": 3
     },
     "sulfur": {
         "name": "sulfur",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "water": 30,
+            "petroleum-gas": 30
+        },
         "energy_required": 1
     },
     "lubricant": {
         "name": "lubricant",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "heavy-oil": 10
+        },
         "energy_required": 1
     },
     "empty-barrel": {
         "name": "empty-barrel",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 1
+        },
         "energy_required": 1
     },
     "steel-plate": {
         "name": "steel-plate",
-        "ingredients": [
-            [
-                "iron-plate",
-                5
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 5
+        },
         "energy_required": 17.5
     },
     "long-handed-inserter": {
         "name": "long-handed-inserter",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                1
-            ],
-            [
-                "iron-plate",
-                1
-            ],
-            [
-                "inserter",
-                1
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 1,
+            "iron-plate": 1,
+            "inserter": 1
+        }
     },
     "fast-inserter": {
         "name": "fast-inserter",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                2
-            ],
-            [
-                "iron-plate",
-                2
-            ],
-            [
-                "inserter",
-                1
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 2,
+            "iron-plate": 2,
+            "inserter": 1
+        }
     },
     "filter-inserter": {
         "name": "filter-inserter",
-        "ingredients": [
-            [
-                "fast-inserter",
-                1
-            ],
-            [
-                "electronic-circuit",
-                4
-            ]
-        ]
+        "ingredients": {
+            "fast-inserter": 1,
+            "electronic-circuit": 4
+        }
     },
     "stack-inserter": {
         "name": "stack-inserter",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                15
-            ],
-            [
-                "electronic-circuit",
-                15
-            ],
-            [
-                "advanced-circuit",
-                1
-            ],
-            [
-                "fast-inserter",
-                1
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 15,
+            "electronic-circuit": 15,
+            "advanced-circuit": 1,
+            "fast-inserter": 1
+        }
     },
     "stack-filter-inserter": {
         "name": "stack-filter-inserter",
-        "ingredients": [
-            [
-                "stack-inserter",
-                1
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ]
+        "ingredients": {
+            "stack-inserter": 1,
+            "electronic-circuit": 5
+        }
     },
     "speed-module": {
         "name": "speed-module",
-        "ingredients": [
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "advanced-circuit": 5,
+            "electronic-circuit": 5
+        },
         "energy_required": 15
     },
     "speed-module-2": {
         "name": "speed-module-2",
-        "ingredients": [
-            [
-                "speed-module",
-                4
-            ],
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "processing-unit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "speed-module": 4,
+            "advanced-circuit": 5,
+            "processing-unit": 5
+        },
         "energy_required": 30
     },
     "speed-module-3": {
         "name": "speed-module-3",
-        "ingredients": [
-            [
-                "speed-module-2",
-                5
-            ],
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "processing-unit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "speed-module-2": 5,
+            "advanced-circuit": 5,
+            "processing-unit": 5
+        },
         "energy_required": 60
     },
     "productivity-module": {
         "name": "productivity-module",
-        "ingredients": [
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "advanced-circuit": 5,
+            "electronic-circuit": 5
+        },
         "energy_required": 15
     },
     "productivity-module-2": {
         "name": "productivity-module-2",
-        "ingredients": [
-            [
-                "productivity-module",
-                4
-            ],
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "processing-unit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "productivity-module": 4,
+            "advanced-circuit": 5,
+            "processing-unit": 5
+        },
         "energy_required": 30
     },
     "productivity-module-3": {
         "name": "productivity-module-3",
-        "ingredients": [
-            [
-                "productivity-module-2",
-                5
-            ],
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "processing-unit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "productivity-module-2": 5,
+            "advanced-circuit": 5,
+            "processing-unit": 5
+        },
         "energy_required": 60
     },
     "effectivity-module": {
         "name": "effectivity-module",
-        "ingredients": [
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "advanced-circuit": 5,
+            "electronic-circuit": 5
+        },
         "energy_required": 15
     },
     "effectivity-module-2": {
         "name": "effectivity-module-2",
-        "ingredients": [
-            [
-                "effectivity-module",
-                4
-            ],
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "processing-unit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "effectivity-module": 4,
+            "advanced-circuit": 5,
+            "processing-unit": 5
+        },
         "energy_required": 30
     },
     "effectivity-module-3": {
         "name": "effectivity-module-3",
-        "ingredients": [
-            [
-                "effectivity-module-2",
-                5
-            ],
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "processing-unit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "effectivity-module-2": 5,
+            "advanced-circuit": 5,
+            "processing-unit": 5
+        },
         "energy_required": 60
     },
     "player-port": {
         "name": "player-port",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                10
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "iron-plate",
-                1
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 10,
+            "iron-gear-wheel": 5,
+            "iron-plate": 1
+        }
     },
     "fast-transport-belt": {
         "name": "fast-transport-belt",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "transport-belt",
-                1
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 5,
+            "transport-belt": 1
+        }
     },
     "express-transport-belt": {
         "name": "express-transport-belt",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "fast-transport-belt",
-                1
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 10,
+            "fast-transport-belt": 1,
+            "lubricant": 20
+        }
     },
     "solar-panel": {
         "name": "solar-panel",
-        "ingredients": [
-            [
-                "steel-plate",
-                5
-            ],
-            [
-                "electronic-circuit",
-                15
-            ],
-            [
-                "copper-plate",
-                5
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 5,
+            "electronic-circuit": 15,
+            "copper-plate": 5
+        },
         "energy_required": 10
     },
     "assembling-machine-2": {
         "name": "assembling-machine-2",
-        "ingredients": [
-            [
-                "iron-plate",
-                9
-            ],
-            [
-                "electronic-circuit",
-                3
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "assembling-machine-1",
-                1
-            ]
-        ]
+        "ingredients": {
+            "iron-plate": 9,
+            "electronic-circuit": 3,
+            "iron-gear-wheel": 5,
+            "assembling-machine-1": 1
+        }
     },
     "assembling-machine-3": {
         "name": "assembling-machine-3",
-        "ingredients": [
-            [
-                "speed-module",
-                4
-            ],
-            [
-                "assembling-machine-2",
-                2
-            ]
-        ]
+        "ingredients": {
+            "speed-module": 4,
+            "assembling-machine-2": 2
+        }
     },
     "car": {
         "name": "car",
-        "ingredients": [
-            [
-                "engine-unit",
-                8
-            ],
-            [
-                "iron-plate",
-                20
-            ],
-            [
-                "steel-plate",
-                5
-            ]
-        ]
+        "ingredients": {
+            "engine-unit": 8,
+            "iron-plate": 20,
+            "steel-plate": 5
+        }
     },
     "tank": {
         "name": "tank",
-        "ingredients": [
-            [
-                "engine-unit",
-                32
-            ],
-            [
-                "steel-plate",
-                50
-            ],
-            [
-                "iron-gear-wheel",
-                15
-            ],
-            [
-                "advanced-circuit",
-                10
-            ]
-        ]
+        "ingredients": {
+            "engine-unit": 32,
+            "steel-plate": 50,
+            "iron-gear-wheel": 15,
+            "advanced-circuit": 10
+        }
     },
     "rail": {
         "name": "rail",
-        "ingredients": [
-            [
-                "stone",
-                1
-            ],
-            [
-                "iron-stick",
-                1
-            ],
-            [
-                "steel-plate",
-                1
-            ]
-        ]
+        "ingredients": {
+            "stone": 1,
+            "iron-stick": 1,
+            "steel-plate": 1
+        }
     },
     "locomotive": {
         "name": "locomotive",
-        "ingredients": [
-            [
-                "engine-unit",
-                20
-            ],
-            [
-                "electronic-circuit",
-                10
-            ],
-            [
-                "steel-plate",
-                30
-            ]
-        ]
+        "ingredients": {
+            "engine-unit": 20,
+            "electronic-circuit": 10,
+            "steel-plate": 30
+        }
     },
     "cargo-wagon": {
         "name": "cargo-wagon",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "iron-plate",
-                20
-            ],
-            [
-                "steel-plate",
-                20
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 10,
+            "iron-plate": 20,
+            "steel-plate": 20
+        }
     },
     "fluid-wagon": {
         "name": "fluid-wagon",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "steel-plate",
-                16
-            ],
-            [
-                "pipe",
-                8
-            ],
-            [
-                "storage-tank",
-                3
-            ]
-        ],
+        "ingredients": {
+            "iron-gear-wheel": 10,
+            "steel-plate": 16,
+            "pipe": 8,
+            "storage-tank": 3
+        },
         "energy_required": 1.5
     },
     "train-stop": {
         "name": "train-stop",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                5
-            ],
-            [
-                "iron-plate",
-                10
-            ],
-            [
-                "steel-plate",
-                3
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 5,
+            "iron-plate": 10,
+            "steel-plate": 3
+        }
     },
     "rail-signal": {
         "name": "rail-signal",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                1
-            ],
-            [
-                "iron-plate",
-                5
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 1,
+            "iron-plate": 5
+        }
     },
     "rail-chain-signal": {
         "name": "rail-chain-signal",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                1
-            ],
-            [
-                "iron-plate",
-                5
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 1,
+            "iron-plate": 5
+        }
     },
     "heavy-armor": {
         "name": "heavy-armor",
-        "ingredients": [
-            [
-                "copper-plate",
-                100
-            ],
-            [
-                "steel-plate",
-                50
-            ]
-        ],
+        "ingredients": {
+            "copper-plate": 100,
+            "steel-plate": 50
+        },
         "energy_required": 8
     },
     "modular-armor": {
         "name": "modular-armor",
-        "ingredients": [
-            [
-                "advanced-circuit",
-                30
-            ],
-            [
-                "steel-plate",
-                50
-            ]
-        ],
+        "ingredients": {
+            "advanced-circuit": 30,
+            "steel-plate": 50
+        },
         "energy_required": 15
     },
     "power-armor": {
         "name": "power-armor",
-        "ingredients": [
-            [
-                "processing-unit",
-                40
-            ],
-            [
-                "electric-engine-unit",
-                20
-            ],
-            [
-                "steel-plate",
-                40
-            ]
-        ],
+        "ingredients": {
+            "processing-unit": 40,
+            "electric-engine-unit": 20,
+            "steel-plate": 40
+        },
         "energy_required": 20
     },
     "power-armor-mk2": {
         "name": "power-armor-mk2",
-        "ingredients": [
-            [
-                "effectivity-module-3",
-                5
-            ],
-            [
-                "speed-module-3",
-                5
-            ],
-            [
-                "processing-unit",
-                40
-            ],
-            [
-                "steel-plate",
-                40
-            ]
-        ],
+        "ingredients": {
+            "effectivity-module-3": 5,
+            "speed-module-3": 5,
+            "processing-unit": 40,
+            "steel-plate": 40
+        },
         "energy_required": 25
     },
     "iron-chest": {
         "name": "iron-chest",
-        "ingredients": [
-            [
-                "iron-plate",
-                8
-            ]
-        ]
+        "ingredients": {
+            "iron-plate": 8
+        }
     },
     "steel-chest": {
         "name": "steel-chest",
-        "ingredients": [
-            [
-                "steel-plate",
-                8
-            ]
-        ]
+        "ingredients": {
+            "steel-plate": 8
+        }
     },
     "stone-wall": {
         "name": "stone-wall",
-        "ingredients": [
-            [
-                "stone-brick",
-                5
-            ]
-        ]
+        "ingredients": {
+            "stone-brick": 5
+        }
     },
     "gate": {
         "name": "gate",
-        "ingredients": [
-            [
-                "stone-wall",
-                1
-            ],
-            [
-                "steel-plate",
-                2
-            ],
-            [
-                "electronic-circuit",
-                2
-            ]
-        ]
+        "ingredients": {
+            "stone-wall": 1,
+            "steel-plate": 2,
+            "electronic-circuit": 2
+        }
     },
     "flamethrower": {
         "name": "flamethrower",
-        "ingredients": [
-            [
-                "steel-plate",
-                5
-            ],
-            [
-                "iron-gear-wheel",
-                10
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 5,
+            "iron-gear-wheel": 10
+        },
         "energy_required": 10
     },
     "land-mine": {
         "name": "land-mine",
-        "ingredients": [
-            [
-                "steel-plate",
-                1
-            ],
-            [
-                "explosives",
-                2
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 1,
+            "explosives": 2
+        },
         "energy_required": 5
     },
     "rocket-launcher": {
         "name": "rocket-launcher",
-        "ingredients": [
-            [
-                "iron-plate",
-                5
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 5,
+            "iron-gear-wheel": 5,
+            "electronic-circuit": 5
+        },
         "energy_required": 10
     },
     "shotgun": {
         "name": "shotgun",
-        "ingredients": [
-            [
-                "iron-plate",
-                15
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "copper-plate",
-                10
-            ],
-            [
-                "wood",
-                5
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 15,
+            "iron-gear-wheel": 5,
+            "copper-plate": 10,
+            "wood": 5
+        },
         "energy_required": 10
     },
     "combat-shotgun": {
         "name": "combat-shotgun",
-        "ingredients": [
-            [
-                "steel-plate",
-                15
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "copper-plate",
-                10
-            ],
-            [
-                "wood",
-                10
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 15,
+            "iron-gear-wheel": 5,
+            "copper-plate": 10,
+            "wood": 10
+        },
         "energy_required": 10
     },
     "railgun": {
         "name": "railgun",
-        "ingredients": [
-            [
-                "steel-plate",
-                15
-            ],
-            [
-                "copper-plate",
-                15
-            ],
-            [
-                "electronic-circuit",
-                10
-            ],
-            [
-                "advanced-circuit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 15,
+            "copper-plate": 15,
+            "electronic-circuit": 10,
+            "advanced-circuit": 5
+        },
         "energy_required": 8
     },
     "science-pack-1": {
         "name": "science-pack-1",
-        "ingredients": [
-            [
-                "copper-plate",
-                1
-            ],
-            [
-                "iron-gear-wheel",
-                1
-            ]
-        ],
+        "ingredients": {
+            "copper-plate": 1,
+            "iron-gear-wheel": 1
+        },
         "energy_required": 5
     },
     "science-pack-2": {
         "name": "science-pack-2",
-        "ingredients": [
-            [
-                "inserter",
-                1
-            ],
-            [
-                "transport-belt",
-                1
-            ]
-        ],
+        "ingredients": {
+            "inserter": 1,
+            "transport-belt": 1
+        },
         "energy_required": 6
     },
     "science-pack-3": {
         "name": "science-pack-3",
-        "ingredients": [
-            [
-                "advanced-circuit",
-                1
-            ],
-            [
-                "engine-unit",
-                1
-            ],
-            [
-                "electric-mining-drill",
-                1
-            ]
-        ],
+        "ingredients": {
+            "advanced-circuit": 1,
+            "engine-unit": 1,
+            "electric-mining-drill": 1
+        },
         "energy_required": 12
     },
     "military-science-pack": {
         "name": "military-science-pack",
-        "ingredients": [
-            [
-                "piercing-rounds-magazine",
-                1
-            ],
-            [
-                "grenade",
-                1
-            ],
-            [
-                "gun-turret",
-                1
-            ]
-        ],
+        "ingredients": {
+            "piercing-rounds-magazine": 1,
+            "grenade": 1,
+            "gun-turret": 1
+        },
         "energy_required": 10
     },
     "production-science-pack": {
         "name": "production-science-pack",
-        "ingredients": [
-            [
-                "electric-engine-unit",
-                1
-            ],
-            [
-                "assembling-machine-1",
-                1
-            ],
-            [
-                "electric-furnace",
-                1
-            ]
-        ],
+        "ingredients": {
+            "electric-engine-unit": 1,
+            "assembling-machine-1": 1,
+            "electric-furnace": 1
+        },
         "energy_required": 14
     },
     "high-tech-science-pack": {
         "name": "high-tech-science-pack",
-        "ingredients": [
-            [
-                "battery",
-                1
-            ],
-            [
-                "processing-unit",
-                3
-            ],
-            [
-                "speed-module",
-                1
-            ],
-            [
-                "copper-cable",
-                30
-            ]
-        ],
+        "ingredients": {
+            "battery": 1,
+            "processing-unit": 3,
+            "speed-module": 1,
+            "copper-cable": 30
+        },
         "energy_required": 14
     },
     "lab": {
         "name": "lab",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                10
-            ],
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "transport-belt",
-                4
-            ]
-        ],
+        "ingredients": {
+            "electronic-circuit": 10,
+            "iron-gear-wheel": 10,
+            "transport-belt": 4
+        },
         "energy_required": 3
     },
     "red-wire": {
         "name": "red-wire",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                1
-            ],
-            [
-                "copper-cable",
-                1
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 1,
+            "copper-cable": 1
+        }
     },
     "green-wire": {
         "name": "green-wire",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                1
-            ],
-            [
-                "copper-cable",
-                1
-            ]
-        ]
+        "ingredients": {
+            "electronic-circuit": 1,
+            "copper-cable": 1
+        }
     },
     "underground-belt": {
         "name": "underground-belt",
-        "ingredients": [
-            [
-                "iron-plate",
-                10
-            ],
-            [
-                "transport-belt",
-                5
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 10,
+            "transport-belt": 5
+        },
         "energy_required": 1
     },
     "fast-underground-belt": {
         "name": "fast-underground-belt",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                40
-            ],
-            [
-                "underground-belt",
-                2
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 40,
+            "underground-belt": 2
+        }
     },
     "express-underground-belt": {
         "name": "express-underground-belt",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                80
-            ],
-            [
-                "fast-underground-belt",
-                2
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 80,
+            "fast-underground-belt": 2,
+            "lubricant": 40
+        }
     },
     "loader": {
         "name": "loader",
-        "ingredients": [
-            [
-                "inserter",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "iron-plate",
-                5
-            ],
-            [
-                "transport-belt",
-                5
-            ]
-        ],
+        "ingredients": {
+            "inserter": 5,
+            "electronic-circuit": 5,
+            "iron-gear-wheel": 5,
+            "iron-plate": 5,
+            "transport-belt": 5
+        },
         "energy_required": 1
     },
     "fast-loader": {
         "name": "fast-loader",
-        "ingredients": [
-            [
-                "fast-transport-belt",
-                5
-            ],
-            [
-                "loader",
-                1
-            ]
-        ],
+        "ingredients": {
+            "fast-transport-belt": 5,
+            "loader": 1
+        },
         "energy_required": 3
     },
     "express-loader": {
         "name": "express-loader",
-        "ingredients": [
-            [
-                "express-transport-belt",
-                5
-            ],
-            [
-                "fast-loader",
-                1
-            ]
-        ],
+        "ingredients": {
+            "express-transport-belt": 5,
+            "fast-loader": 1
+        },
         "energy_required": 10
     },
     "splitter": {
         "name": "splitter",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                5
-            ],
-            [
-                "iron-plate",
-                5
-            ],
-            [
-                "transport-belt",
-                4
-            ]
-        ],
+        "ingredients": {
+            "electronic-circuit": 5,
+            "iron-plate": 5,
+            "transport-belt": 4
+        },
         "energy_required": 1
     },
     "fast-splitter": {
         "name": "fast-splitter",
-        "ingredients": [
-            [
-                "splitter",
-                1
-            ],
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "electronic-circuit",
-                10
-            ]
-        ],
+        "ingredients": {
+            "splitter": 1,
+            "iron-gear-wheel": 10,
+            "electronic-circuit": 10
+        },
         "energy_required": 2
     },
     "express-splitter": {
         "name": "express-splitter",
-        "ingredients": [
-            [
-                "fast-splitter",
-                1
-            ],
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "advanced-circuit",
-                10
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "fast-splitter": 1,
+            "iron-gear-wheel": 10,
+            "advanced-circuit": 10,
+            "lubricant": 80
+        },
         "energy_required": 2
     },
     "advanced-circuit": {
         "name": "advanced-circuit",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                2
-            ],
-            [
-                "plastic-bar",
-                2
-            ],
-            [
-                "copper-cable",
-                4
-            ]
-        ],
+        "ingredients": {
+            "electronic-circuit": 2,
+            "plastic-bar": 2,
+            "copper-cable": 4
+        },
         "energy_required": 6
     },
     "processing-unit": {
         "name": "processing-unit",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                20
-            ],
-            [
-                "advanced-circuit",
-                2
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "electronic-circuit": 20,
+            "advanced-circuit": 2,
+            "sulfuric-acid": 5
+        },
         "energy_required": 10
     },
     "logistic-robot": {
         "name": "logistic-robot",
-        "ingredients": [
-            [
-                "flying-robot-frame",
-                1
-            ],
-            [
-                "advanced-circuit",
-                2
-            ]
-        ]
+        "ingredients": {
+            "flying-robot-frame": 1,
+            "advanced-circuit": 2
+        }
     },
     "construction-robot": {
         "name": "construction-robot",
-        "ingredients": [
-            [
-                "flying-robot-frame",
-                1
-            ],
-            [
-                "electronic-circuit",
-                2
-            ]
-        ]
+        "ingredients": {
+            "flying-robot-frame": 1,
+            "electronic-circuit": 2
+        }
     },
     "logistic-chest-passive-provider": {
         "name": "logistic-chest-passive-provider",
-        "ingredients": [
-            [
-                "steel-chest",
-                1
-            ],
-            [
-                "electronic-circuit",
-                3
-            ],
-            [
-                "advanced-circuit",
-                1
-            ]
-        ]
+        "ingredients": {
+            "steel-chest": 1,
+            "electronic-circuit": 3,
+            "advanced-circuit": 1
+        }
     },
     "logistic-chest-active-provider": {
         "name": "logistic-chest-active-provider",
-        "ingredients": [
-            [
-                "steel-chest",
-                1
-            ],
-            [
-                "electronic-circuit",
-                3
-            ],
-            [
-                "advanced-circuit",
-                1
-            ]
-        ]
+        "ingredients": {
+            "steel-chest": 1,
+            "electronic-circuit": 3,
+            "advanced-circuit": 1
+        }
     },
     "logistic-chest-storage": {
         "name": "logistic-chest-storage",
-        "ingredients": [
-            [
-                "steel-chest",
-                1
-            ],
-            [
-                "electronic-circuit",
-                3
-            ],
-            [
-                "advanced-circuit",
-                1
-            ]
-        ]
+        "ingredients": {
+            "steel-chest": 1,
+            "electronic-circuit": 3,
+            "advanced-circuit": 1
+        }
     },
     "logistic-chest-requester": {
         "name": "logistic-chest-requester",
-        "ingredients": [
-            [
-                "steel-chest",
-                1
-            ],
-            [
-                "electronic-circuit",
-                3
-            ],
-            [
-                "advanced-circuit",
-                1
-            ]
-        ]
+        "ingredients": {
+            "steel-chest": 1,
+            "electronic-circuit": 3,
+            "advanced-circuit": 1
+        }
     },
     "rocket-silo": {
         "name": "rocket-silo",
-        "ingredients": [
-            [
-                "steel-plate",
-                1000
-            ],
-            [
-                "concrete",
-                1000
-            ],
-            [
-                "pipe",
-                100
-            ],
-            [
-                "processing-unit",
-                200
-            ],
-            [
-                "electric-engine-unit",
-                200
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 1000,
+            "concrete": 1000,
+            "pipe": 100,
+            "processing-unit": 200,
+            "electric-engine-unit": 200
+        },
         "energy_required": 30
     },
     "roboport": {
         "name": "roboport",
-        "ingredients": [
-            [
-                "steel-plate",
-                45
-            ],
-            [
-                "iron-gear-wheel",
-                45
-            ],
-            [
-                "advanced-circuit",
-                45
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 45,
+            "iron-gear-wheel": 45,
+            "advanced-circuit": 45
+        },
         "energy_required": 10
     },
     "steel-axe": {
         "name": "steel-axe",
-        "ingredients": [
-            [
-                "steel-plate",
-                5
-            ],
-            [
-                "iron-stick",
-                2
-            ]
-        ]
+        "ingredients": {
+            "steel-plate": 5,
+            "iron-stick": 2
+        }
     },
     "big-electric-pole": {
         "name": "big-electric-pole",
-        "ingredients": [
-            [
-                "steel-plate",
-                5
-            ],
-            [
-                "copper-plate",
-                5
-            ]
-        ]
+        "ingredients": {
+            "steel-plate": 5,
+            "copper-plate": 5
+        }
     },
     "substation": {
         "name": "substation",
-        "ingredients": [
-            [
-                "steel-plate",
-                10
-            ],
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "copper-plate",
-                5
-            ]
-        ]
+        "ingredients": {
+            "steel-plate": 10,
+            "advanced-circuit": 5,
+            "copper-plate": 5
+        }
     },
     "medium-electric-pole": {
         "name": "medium-electric-pole",
-        "ingredients": [
-            [
-                "steel-plate",
-                2
-            ],
-            [
-                "copper-plate",
-                2
-            ]
-        ]
+        "ingredients": {
+            "steel-plate": 2,
+            "copper-plate": 2
+        }
     },
     "accumulator": {
         "name": "accumulator",
-        "ingredients": [
-            [
-                "iron-plate",
-                2
-            ],
-            [
-                "battery",
-                5
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 2,
+            "battery": 5
+        },
         "energy_required": 10
     },
     "steel-furnace": {
         "name": "steel-furnace",
-        "ingredients": [
-            [
-                "steel-plate",
-                6
-            ],
-            [
-                "stone-brick",
-                10
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 6,
+            "stone-brick": 10
+        },
         "energy_required": 3
     },
     "electric-furnace": {
         "name": "electric-furnace",
-        "ingredients": [
-            [
-                "steel-plate",
-                10
-            ],
-            [
-                "advanced-circuit",
-                5
-            ],
-            [
-                "stone-brick",
-                10
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 10,
+            "advanced-circuit": 5,
+            "stone-brick": 10
+        },
         "energy_required": 5
     },
     "beacon": {
         "name": "beacon",
-        "ingredients": [
-            [
-                "electronic-circuit",
-                20
-            ],
-            [
-                "advanced-circuit",
-                20
-            ],
-            [
-                "steel-plate",
-                10
-            ],
-            [
-                "copper-cable",
-                10
-            ]
-        ],
+        "ingredients": {
+            "electronic-circuit": 20,
+            "advanced-circuit": 20,
+            "steel-plate": 10,
+            "copper-cable": 10
+        },
         "energy_required": 15
     },
     "pumpjack": {
         "name": "pumpjack",
-        "ingredients": [
-            [
-                "steel-plate",
-                5
-            ],
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "electronic-circuit",
-                5
-            ],
-            [
-                "pipe",
-                10
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 5,
+            "iron-gear-wheel": 10,
+            "electronic-circuit": 5,
+            "pipe": 10
+        },
         "energy_required": 5
     },
     "oil-refinery": {
         "name": "oil-refinery",
-        "ingredients": [
-            [
-                "steel-plate",
-                15
-            ],
-            [
-                "iron-gear-wheel",
-                10
-            ],
-            [
-                "stone-brick",
-                10
-            ],
-            [
-                "electronic-circuit",
-                10
-            ],
-            [
-                "pipe",
-                10
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 15,
+            "iron-gear-wheel": 10,
+            "stone-brick": 10,
+            "electronic-circuit": 10,
+            "pipe": 10
+        },
         "energy_required": 10
     },
     "engine-unit": {
         "name": "engine-unit",
-        "ingredients": [
-            [
-                "steel-plate",
-                1
-            ],
-            [
-                "iron-gear-wheel",
-                1
-            ],
-            [
-                "pipe",
-                2
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 1,
+            "iron-gear-wheel": 1,
+            "pipe": 2
+        },
         "energy_required": 10
     },
     "electric-engine-unit": {
         "name": "electric-engine-unit",
-        "ingredients": [
-            [
-                "engine-unit",
-                1
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "electronic-circuit",
-                2
-            ]
-        ],
+        "ingredients": {
+            "engine-unit": 1,
+            "lubricant": 15,
+            "electronic-circuit": 2
+        },
         "energy_required": 10
     },
     "flying-robot-frame": {
         "name": "flying-robot-frame",
-        "ingredients": [
-            [
-                "electric-engine-unit",
-                1
-            ],
-            [
-                "battery",
-                2
-            ],
-            [
-                "steel-plate",
-                1
-            ],
-            [
-                "electronic-circuit",
-                3
-            ]
-        ],
+        "ingredients": {
+            "electric-engine-unit": 1,
+            "battery": 2,
+            "steel-plate": 1,
+            "electronic-circuit": 3
+        },
         "energy_required": 20
     },
     "explosives": {
         "name": "explosives",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "sulfur": 1,
+            "coal": 1,
+            "water": 10
+        },
         "energy_required": 5
     },
     "battery": {
         "name": "battery",
-        "ingredients": [
-            [
-                "type",
-                "name",
-                "amount"
-            ],
-            [
-                "iron-plate",
-                1
-            ],
-            [
-                "copper-plate",
-                1
-            ]
-        ],
+        "ingredients": {
+            "sulfuric-acid": 20,
+            "iron-plate": 1,
+            "copper-plate": 1
+        },
         "energy_required": 5
     },
     "storage-tank": {
         "name": "storage-tank",
-        "ingredients": [
-            [
-                "iron-plate",
-                20
-            ],
-            [
-                "steel-plate",
-                5
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 20,
+            "steel-plate": 5
+        },
         "energy_required": 3
     },
     "pump": {
         "name": "pump",
-        "ingredients": [
-            [
-                "engine-unit",
-                1
-            ],
-            [
-                "steel-plate",
-                1
-            ],
-            [
-                "pipe",
-                1
-            ]
-        ],
+        "ingredients": {
+            "engine-unit": 1,
+            "steel-plate": 1,
+            "pipe": 1
+        },
         "energy_required": 2
     },
     "chemical-plant": {
         "name": "chemical-plant",
-        "ingredients": [
-            [
-                "steel-plate",
-                5
-            ],
-            [
-                "iron-gear-wheel",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ],
-            [
-                "pipe",
-                5
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 5,
+            "iron-gear-wheel": 5,
+            "electronic-circuit": 5,
+            "pipe": 5
+        },
         "energy_required": 5
     },
     "small-plane": {
         "name": "small-plane",
-        "ingredients": [
-            [
-                "plastic-bar",
-                100
-            ],
-            [
-                "advanced-circuit",
-                200
-            ],
-            [
-                "electric-engine-unit",
-                20
-            ],
-            [
-                "battery",
-                100
-            ]
-        ],
+        "ingredients": {
+            "plastic-bar": 100,
+            "advanced-circuit": 200,
+            "electric-engine-unit": 20,
+            "battery": 100
+        },
         "energy_required": 30
     },
     "arithmetic-combinator": {
         "name": "arithmetic-combinator",
-        "ingredients": [
-            [
-                "copper-cable",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ]
+        "ingredients": {
+            "copper-cable": 5,
+            "electronic-circuit": 5
+        }
     },
     "decider-combinator": {
         "name": "decider-combinator",
-        "ingredients": [
-            [
-                "copper-cable",
-                5
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ]
+        "ingredients": {
+            "copper-cable": 5,
+            "electronic-circuit": 5
+        }
     },
     "constant-combinator": {
         "name": "constant-combinator",
-        "ingredients": [
-            [
-                "copper-cable",
-                5
-            ],
-            [
-                "electronic-circuit",
-                2
-            ]
-        ]
+        "ingredients": {
+            "copper-cable": 5,
+            "electronic-circuit": 2
+        }
     },
     "power-switch": {
         "name": "power-switch",
-        "ingredients": [
-            [
-                "iron-plate",
-                5
-            ],
-            [
-                "copper-cable",
-                5
-            ],
-            [
-                "electronic-circuit",
-                2
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 5,
+            "copper-cable": 5,
+            "electronic-circuit": 2
+        },
         "energy_required": 2
     },
     "programmable-speaker": {
         "name": "programmable-speaker",
-        "ingredients": [
-            [
-                "iron-plate",
-                5
-            ],
-            [
-                "copper-cable",
-                5
-            ],
-            [
-                "electronic-circuit",
-                4
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 5,
+            "copper-cable": 5,
+            "electronic-circuit": 4
+        },
         "energy_required": 2
     },
     "low-density-structure": {
         "name": "low-density-structure",
-        "ingredients": [
-            [
-                "steel-plate",
-                10
-            ],
-            [
-                "copper-plate",
-                5
-            ],
-            [
-                "plastic-bar",
-                5
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 10,
+            "copper-plate": 5,
+            "plastic-bar": 5
+        },
         "energy_required": 30
     },
     "rocket-fuel": {
         "name": "rocket-fuel",
-        "ingredients": [
-            [
-                "solid-fuel",
-                10
-            ]
-        ],
+        "ingredients": {
+            "solid-fuel": 10
+        },
         "energy_required": 30
     },
     "rocket-control-unit": {
         "name": "rocket-control-unit",
-        "ingredients": [
-            [
-                "processing-unit",
-                1
-            ],
-            [
-                "speed-module",
-                1
-            ]
-        ],
+        "ingredients": {
+            "processing-unit": 1,
+            "speed-module": 1
+        },
         "energy_required": 30
     },
     "rocket-part": {
         "name": "rocket-part",
-        "ingredients": [
-            [
-                "low-density-structure",
-                10
-            ],
-            [
-                "rocket-fuel",
-                10
-            ],
-            [
-                "rocket-control-unit",
-                10
-            ]
-        ],
+        "ingredients": {
+            "low-density-structure": 10,
+            "rocket-fuel": 10,
+            "rocket-control-unit": 10
+        },
         "energy_required": 3
     },
     "satellite": {
         "name": "satellite",
-        "ingredients": [
-            [
-                "low-density-structure",
-                100
-            ],
-            [
-                "solar-panel",
-                100
-            ],
-            [
-                "accumulator",
-                100
-            ],
-            [
-                "radar",
-                5
-            ],
-            [
-                "processing-unit",
-                100
-            ],
-            [
-                "rocket-fuel",
-                50
-            ]
-        ],
+        "ingredients": {
+            "low-density-structure": 100,
+            "solar-panel": 100,
+            "accumulator": 100,
+            "radar": 5,
+            "processing-unit": 100,
+            "rocket-fuel": 50
+        },
         "energy_required": 3
     },
     "concrete": {
         "name": "concrete",
-        "ingredients": [
-            [
-                "stone-brick",
-                5
-            ],
-            [
-                "iron-ore",
-                1
-            ],
-            [
-                "type",
-                "name",
-                "amount"
-            ]
-        ],
+        "ingredients": {
+            "stone-brick": 5,
+            "iron-ore": 1,
+            "water": 100
+        },
         "energy_required": 10
     },
     "hazard-concrete": {
         "name": "hazard-concrete",
-        "ingredients": [
-            [
-                "concrete",
-                10
-            ]
-        ],
+        "ingredients": {
+            "concrete": 10
+        },
         "energy_required": 0.25
     },
     "landfill": {
         "name": "landfill",
-        "ingredients": [
-            [
-                "stone",
-                20
-            ]
-        ],
+        "ingredients": {
+            "stone": 20
+        },
         "energy_required": 0.5
     },
     "electric-energy-interface": {
         "name": "electric-energy-interface",
-        "ingredients": [
-            [
-                "iron-plate",
-                2
-            ],
-            [
-                "electronic-circuit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 2,
+            "electronic-circuit": 5
+        },
         "energy_required": 0.5
     },
     "nuclear-reactor": {
         "name": "nuclear-reactor",
-        "ingredients": [
-            [
-                "concrete",
-                500
-            ],
-            [
-                "steel-plate",
-                500
-            ],
-            [
-                "advanced-circuit",
-                500
-            ],
-            [
-                "copper-plate",
-                500
-            ]
-        ],
+        "ingredients": {
+            "concrete": 500,
+            "steel-plate": 500,
+            "advanced-circuit": 500,
+            "copper-plate": 500
+        },
         "energy_required": 4
     },
     "centrifuge": {
         "name": "centrifuge",
-        "ingredients": [
-            [
-                "concrete",
-                100
-            ],
-            [
-                "steel-plate",
-                50
-            ],
-            [
-                "advanced-circuit",
-                100
-            ],
-            [
-                "iron-gear-wheel",
-                100
-            ]
-        ],
+        "ingredients": {
+            "concrete": 100,
+            "steel-plate": 50,
+            "advanced-circuit": 100,
+            "iron-gear-wheel": 100
+        },
         "energy_required": 4
     },
     "uranium-processing": {
         "name": "uranium-processing",
-        "ingredients": [
-            [
-                "uranium-ore",
-                10
-            ]
-        ],
+        "ingredients": {
+            "uranium-ore": 10
+        },
         "energy_required": 10
     },
     "kovarex-enrichment-process": {
         "name": "kovarex-enrichment-process",
-        "ingredients": [
-            [
-                "uranium-235",
-                40
-            ],
-            [
-                "uranium-238",
-                5
-            ]
-        ],
+        "ingredients": {
+            "uranium-235": 40,
+            "uranium-238": 5
+        },
         "energy_required": 50
     },
     "nuclear-fuel-reprocessing": {
         "name": "nuclear-fuel-reprocessing",
-        "ingredients": [
-            [
-                "used-up-uranium-fuel-cell",
-                5
-            ]
-        ],
+        "ingredients": {
+            "used-up-uranium-fuel-cell": 5
+        },
         "energy_required": 50
     },
     "uranium-fuel-cell": {
         "name": "uranium-fuel-cell",
-        "ingredients": [
-            [
-                "iron-plate",
-                10
-            ],
-            [
-                "uranium-235",
-                1
-            ],
-            [
-                "uranium-238",
-                19
-            ]
-        ],
+        "ingredients": {
+            "iron-plate": 10,
+            "uranium-235": 1,
+            "uranium-238": 19
+        },
         "energy_required": 10
     },
     "heat-exchanger": {
         "name": "heat-exchanger",
-        "ingredients": [
-            [
-                "steel-plate",
-                10
-            ],
-            [
-                "copper-plate",
-                100
-            ],
-            [
-                "pipe",
-                10
-            ]
-        ]
+        "ingredients": {
+            "steel-plate": 10,
+            "copper-plate": 100,
+            "pipe": 10
+        }
     },
     "heat-pipe": {
         "name": "heat-pipe",
-        "ingredients": [
-            [
-                "steel-plate",
-                10
-            ],
-            [
-                "copper-plate",
-                20
-            ]
-        ]
+        "ingredients": {
+            "steel-plate": 10,
+            "copper-plate": 20
+        }
     },
     "steam-turbine": {
         "name": "steam-turbine",
-        "ingredients": [
-            [
-                "iron-gear-wheel",
-                50
-            ],
-            [
-                "copper-plate",
-                50
-            ],
-            [
-                "pipe",
-                20
-            ]
-        ]
+        "ingredients": {
+            "iron-gear-wheel": 50,
+            "copper-plate": 50,
+            "pipe": 20
+        }
     },
     "laser-turret": {
         "name": "laser-turret",
-        "ingredients": [
-            [
-                "steel-plate",
-                20
-            ],
-            [
-                "electronic-circuit",
-                20
-            ],
-            [
-                "battery",
-                12
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 20,
+            "electronic-circuit": 20,
+            "battery": 12
+        },
         "energy_required": 20
     },
     "flamethrower-turret": {
         "name": "flamethrower-turret",
-        "ingredients": [
-            [
-                "steel-plate",
-                30
-            ],
-            [
-                "iron-gear-wheel",
-                15
-            ],
-            [
-                "pipe",
-                10
-            ],
-            [
-                "engine-unit",
-                5
-            ]
-        ],
+        "ingredients": {
+            "steel-plate": 30,
+            "iron-gear-wheel": 15,
+            "pipe": 10,
+            "engine-unit": 5
+        },
         "energy_required": 20
     }
 }
