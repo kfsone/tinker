@@ -301,12 +301,10 @@ def main(argv):
     updates = updater.check_for_updates()
     if not updates:
         return True
-    if args.check:
-        return False
+    if not args.check:
+        updater.do_updates(dry_run=args.dry_run, leave_old_versions=args.leave_old_mods)
 
-    updater.do_updates(dry_run=args.dry_run, leave_old_versions=args.leave_old_mods)
-
-    return True
+    return False
 
 if __name__ == "__main__":
     if not main(sys.argv[1:]):
