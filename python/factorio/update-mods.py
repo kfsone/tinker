@@ -9,6 +9,7 @@ import os
 import re
 import requests
 import resource
+import stat
 import sys
 
 # Try "tqdm" for progress bar reporting
@@ -218,8 +219,9 @@ class ModUpdater(object):
             tmp_filename = ".mod_%s.dl" % (mod_filename)
             tmp_path     = os.path.join(self.mods_path, tmp_filename)
 
-            uri = self.server + mod_path
-            req = requests.Request("GET", uri).prepare()
+            uri  = self.server + mod_path
+            auth = { 'username': self.username, 'token': self.token }
+            req  = requests.Request("GET", uri, params=auth).prepare()
             self.logger.debug("Requesting: %s => %s => %s", req.url, tmp_path, dl_path)
 
             try:
@@ -239,6 +241,8 @@ class ModUpdater(object):
                         outfh.write(chunk)
                         bytes_read += len(chunk)
                         pb.update(bytes_read)
+
+                os.chmod(tmp_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
 
                 self.logger.debug("Rename %s => %s", tmp_path, dl_path)
                 if not dry_run:
