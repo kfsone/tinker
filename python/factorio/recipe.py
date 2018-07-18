@@ -332,7 +332,7 @@ if __name__ == "__main__":
 
     if args.path.endswith('.json'):
         if args.json:
-            raise RuntimeError("--json is not compatbile with specifying a .json input source")
+            raise RuntimeError("--json is not compatible with specifying a .json input source")
         with open(args.path, 'r') as fh:
             recipes = json.loads(fh.read())
     else:
