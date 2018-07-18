@@ -6,4 +6,7 @@ __pycache__
 python/*.spec
 python/dist
 python/.venv
-
+cpp/*/Debug
+cpp/*/Release
+*.vcxproj.filters
+*.vcxproj.user
