@@ -27,6 +27,7 @@ namespace FreeCell
 
 		bool empty() const noexcept { return mCards.empty(); }
 		auto size() const noexcept { return mCards.size(); }
+		uint8_t count() const noexcept { return static_cast<uint8_t>(size()); }
 		const Card& top() const noexcept { return mCards.back(); }
 
 		CardSequence find(Card card_) noexcept

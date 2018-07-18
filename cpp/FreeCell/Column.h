@@ -51,6 +51,8 @@ namespace FreeCell
 
 		friend static bool operator < (const CardStack& lhs, const CardStack& rhs) noexcept;
 
+		uint8_t at(size_t index_) const noexcept { return (index_ < size()) ? mCards[index_].value() : INVALID_CARD; }
+
 	};
 
 	static inline bool operator < (const CardStack& lhs_, const CardStack& rhs_) noexcept

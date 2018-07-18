@@ -3,56 +3,25 @@
 #include <string>
 
 #include "State.h"
-#include "Deck.h"
 
 
 namespace FreeCell
 {
-	auto Deck::getState() const -> State
+	static const char hexes[] = "0123456789ABCDEF";
+
+	std::string State::describe() const noexcept
 	{
-		// Output will be:
-		//  top card of each foundation :- NUM_SUITES,
-		//  all the spares              :- NUM_SPARES,
-		//  all column cards            :- <= NUM_CARDS
-		//  column separators           :- NUM_COLUMNS
-
-		State state{};
-		size_t offset = 0;
-
-		// Track the top card of each foundation.
-		for (auto& f : mFoundations)
-			offset = state.append(f.topCard(), offset);
-
-		// Track spares until we get an invalid card.
-		for (size_t i = 0; i < NUM_SPARES; ++i)
+		std::string result{};
+		result.reserve(NUM_BYTES * 2);	// 2 hex characters per byte.
+		for (auto byte : mData)
 		{
-			auto value = mSpares.at(i);
-			offset = state.append(value, offset);
-			if (value == INVALID_CARD)
-				break;
+			result.push_back(hexes[byte >> 4]);
+			result.push_back(hexes[byte & 0xf]);
 		}
-
-		// Build a sorted list of decks.
-		std::array<const Column*, NUM_COLUMNS> columns;
-		for (size_t i = 0; i < NUM_COLUMNS; ++i)
-		{
-			columns[i] = &mColumns[i];
-		}
-		std::sort(std::begin(columns), std::end(columns), [](const Column* lhs_, const Column* rhs_) {
-			return *lhs_ < *rhs_;
-		});
-		for (auto& col : columns)
-		{
-			offset = state.append(INVALID_CARD, offset);
-			for (auto& card : *col)
-			{
-				offset = state.append(card.value(), offset);
-			}
-		}
-
-		return state;
+		return result;
 	}
 }
+
 
 void validate(const std::string where, const FreeCell::State& data, const FreeCell::State::state_t& expect)
 {

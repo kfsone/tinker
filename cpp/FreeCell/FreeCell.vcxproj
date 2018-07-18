@@ -166,6 +166,7 @@
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Deck.cpp" />
     <ClCompile Include="FreeCell.cpp" />
     <ClCompile Include="Labels.cpp" />
     <ClCompile Include="State.cpp" />

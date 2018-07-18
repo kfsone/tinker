@@ -28,8 +28,12 @@ namespace FreeCell
 	};
 
 	constexpr uint8_t INVALID_CARD = 255;						//! Constant for "no card".
-	constexpr uint8_t FOUNDATION   = INVALID_CARD - 1;			//! Card ID representing the foundation
-	constexpr uint8_t SPARES       = FOUNDATION - 1;			//! Card ID representing the spare pile
+
+	//! Enumerations of the cardstack types where things can be placed.
+	enum class Placement : uint8_t
+	{
+		Column, Spare, Foundation
+	};
 
 	// Numeric values for the various enum'd constraints to reduce casting elsewhere.
 	constexpr uint8_t NUM_COLORS = uint8_t(Color::_NumColors);	//! Pre-cast number of card colors.

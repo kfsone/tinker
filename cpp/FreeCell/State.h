@@ -77,9 +77,11 @@ namespace FreeCell
 
 		auto hash() const noexcept
 		{
-			std::hash<std::u32string_view> hasher;
-			return hasher(std::u32string_view{ reinterpret_cast<const char32_t*>(mData.data()), NUM_BYTES / sizeof(char32_t) });
+			const char* data = reinterpret_cast<const char*>(mData.data());
+			return std::hash<std::string_view>()(std::string_view{ data, NUM_BYTES / sizeof(char32_t) });
 		}
+
+		std::string describe() const noexcept;
 	};
 }
 

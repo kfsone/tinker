@@ -38,11 +38,9 @@ namespace FreeCell
 		constexpr Card() noexcept {}
 		constexpr Card(Suite suite_, Face face_) noexcept
 			: mSuite(suite_), mFace(face_) {}
+		constexpr Card(uint8_t value_) noexcept : mValue{ value_ } {}
 
-		std::string describe()		const noexcept { return gFaces[mFaceNo] + gSuites[mSuiteNo]; }
-
-	private:
-		constexpr uint8_t index()	const noexcept { return (mFaceNo * NUM_SUITES) + mSuiteNo; }
+		std::string describe()		const noexcept { return ((mFace == Face::Ten) ? "" : " ") + gFaces[mFaceNo] + gSuites[mSuiteNo]; }
 
 	public:
 		constexpr auto suite()		const noexcept { return mSuite; }
@@ -51,6 +49,8 @@ namespace FreeCell
 		constexpr auto faceNo()     const noexcept { return mFaceNo; }
         constexpr auto color()		const noexcept { return gColors[mSuiteNo]; }
 		constexpr auto value()      const noexcept { return mValue; }
+
+		constexpr uint8_t index()	const noexcept { return (mFaceNo * NUM_SUITES) + mSuiteNo; }
 
 		constexpr bool operator == (const Card rhs_) const noexcept { return mValue == rhs_.mValue; }
 		constexpr bool operator <  (const Card rhs_) const noexcept { return mValue <  rhs_.mValue; }
