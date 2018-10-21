@@ -1,0 +1,221 @@
+DisconnectAll()
+
+var serv = Connect(Connect("FelixHomeComputer").LoadMemory("librarian"))
+var pc = Connect(serv.getPCName())
+var ex = Connect(serv.getExtractorName())
+
+#serv.ToggleModifier()
+#serv.Sleep(1)
+#serv.GotoPerson("Pixie")
+
+string text = ""
+loop item in pc.GetThingsInRoom("Hotel_Room1")
+    text = text + item + " "
+end
+ex.CopyToClipboard(text)
+
+
+
+---------- Beer ---------------------------------
+
+Drink(1)
+Speed(100)
+Charisma(100)
+Sleepiness(-100)
+Smelliness(-100)
+Drunkenness(-100)
+Corruption(-100)
+
+string sink_name
+
+sink_name = 'Lodge_Room2_Poor_WaterTap_Poor_WaterTap_1'
+Connect(sink_name).SetLiquidAmount(6003)
+
+sink_name = 'Hotel_Bathroom_Poor_WaterTap_Poor_WaterTap_1'
+Connect(sink_name).SetLiquidAmount(6004)
+
+
+-------------- Ministry Crypto ----------------------
+ClearText()
+
+Print("MINISTRY CRYPTO")
+
+string s = Input("Enter key: ")
+number k = CharToInt(s[0])
+
+Print("Enter message:")
+string message = Input("")
+
+string encrypted = ""
+
+loop c in message
+    if c == " "
+        encrypted += " "
+    else
+        var sum = Mod(k + CharToInt(c), 25)
+        #Print("sum for " + c + " = " + sum)
+
+        var c2 = IntToChar(sum)
+        encrypted += c2
+    end
+end
+
+Print("Encrypted:")
+Print("------------")
+Print(encrypted)
+Print("------------")
+
+
+-------------- PLAY WIFE ----------------------
+
+
+
+var flx = Connect("FelixHomeComputer")
+string memory = "playwife"
+if ! flx.HasMemory(memory)
+  flx.SaveMemory(memory, "")
+end
+string rpt = flx.LoadMemory(memory)
+
+void record(string action)
+    string line = action + " " + GetUser() + " at " + GetHour() + ":" + GetMinute()
+    Print(line)
+    rpt += line
+    flx.SaveMemory(memory, rpt)
+end
+
+record("Logon")
+
+ClearText()
+
+Print("Welcome to PLAY STATION")
+Print("-----------------------")
+Print("")
+Print("The latest in home entertainment")
+Print("")
+Input("Press enter to start...")
+Sleep(1)
+PlaySound("Powerup 4")
+
+StartGame()
+
+# Game loop
+loop
+    string command = Input("> ")
+    if command == "look"
+        PlaySound("Blip 3")
+        Look()
+    else if command == "think"
+        PlaySound("Blip 3")
+        Think()
+    else if command == "use"
+        PlaySound("Blip 3")
+        Use()
+    else if command == "exit"
+        PlaySound("Shoot 4")
+        break
+    else
+        PlaySound("Shoot 3")
+        Help()
+    end
+end
+
+ExitGame()
+
+record("Logoff")
+
+
+# FUNCTIONS
+
+void StartGame()
+    Fx()
+    Lock("BetweenFelixAndLongson_Door1")
+    ClearText()
+    SetPosition("PlayWife", "BetweenFelixAndLongson_Trigger_1")
+    Help()
+end
+
+
+void Help()
+    Print(" - AVAILABLE COMMANDS - ")
+    Print("'think' - get information")
+    Print("'look' - list things in room")
+    Print("'use' - use something in the room")
+    Print("'exit' - turn off the game")
+    Print(" ---------------------- ")
+end
+
+
+void Think()
+    var pos = GetPosition("PlayWife")
+    Print(pos)
+    var action = GetAction("PlayWife")
+    if action == ""
+        action = "Doing nothing."
+    end
+    Print("Action: " + action)
+end
+
+void Look()
+    string roomName = GetRoom("PlayWife")
+    array stuff = GetThingsInRoom(roomName)
+    number i = 0
+    loop stuff
+        Print(i + ": " + @)
+        i++
+    end
+end
+
+void Use() 
+    Look()
+    Print("Use what item?")
+    number nr = Input("nr: ")
+    string roomName = GetRoom("PlayWife")
+    array stuff = GetThingsInRoom(roomName)
+    if nr >= 0 and nr < Count(stuff)
+        var obj = stuff[nr]
+        InteractWith("PlayWife", obj)
+    else
+        Print("Invalid nr")
+    end
+end
+
+void ExitGame()
+    SetPosition("PlayWife", "CharacterRoom_Point")
+    Unlock("BetweenFelixAndLongson_Door1")
+end
+
+
+void Fx()
+    ClearText()
+    loop from 1 to 30
+        Print("* * * * * * * * * * * * * * * * * * ")
+        Print(" * * * * * * * * * * * * * * * * * *")
+    end
+    ClearText()
+end
+
+
+
+------------------ Mine Cart -----------------------------
+var cart = Connect("MineCart")
+
+Print("--------------------")
+Print("Leaving station")
+Lock("MineCart_Interior_Door2_1")
+number speed = 100
+cart.SetSpeed(speed)
+Print("Speed = " + speed)
+Sleep(2)
+Print("--------------------")
+
+loop
+	Sleep(0.25)
+	if cart.IsAtStation()
+        Print("At station, will stop")
+        Unlock("MineCart_Interior_Door2_1")
+		cart.SetSpeed(0)
+        Say("HERE")
+		break
+	end
+end

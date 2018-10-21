@@ -1,0 +1,1517 @@
+
+They're on to mee....---
+
+They know what I have stolen, but they don't  know how I managed to make it work! I think they're coming.  I need to run! The "thing" is hidden where the wind  always blows and then you need to go inside.
+
+It wasn't safe to put the  two of them in the same place...
+
+If i don't make it, remember to keep fighting!
+
+SetWorldPosition("Hotel_Exterior", 41, 35)
+SetWorldPosition("Hotel_Lobby", 32, 15)
+SetWorldPosition("Hotel_Room1", 11, 10)
+SetWorldPosition("Plaza", 6, 43)
+SetWorldPosition("Lodge_Room2", 6, 43)
+SetWorldPosition("Lodge_Room1", 11, 22)
+SetWorldPosition("Ministry_Lobby", 6, -27)f
+SetWorldPosition("PoorDesolateBuilding1_Exterior", 24, 14)
+SetWorldPosition("Casino_Floor2", -3, 20)
+SetWorldPosition("FelixApartment", 4, -17)
+SetWorldPosition("TownHall", 32, 45)
+SetWorldPosition("Cafe_Exterior", 6, -7)
+SetWorldPosition("BetweenFelixAndLongson", -3, -7)
+
+
+-- Ratvader
+
+
+Flopp_100
+
+###############
+###############
+
+###############
+
+###############
+###############
+###############
+
+
+    end
+    var hugin = Connect("Hugin")
+    hugin.Print("Sum calculation result: " + sum)
+    return sum
+end
+
+number PRODUCT(array a)
+    var sum = 0
+    loop x in a
+        sum *= x
+    end
+
+
+
+###################
+#
+#
+#
+#
+var a = Input("Enter rain amount:")
+SetRain(a)
+###########################
+############
+
+
+
+
+
+
+var name = Input("Enter name of target: ")
+var personId = Connect(name)
+
+
+loop
+    Sleep(1.0)
+    if GetNumericData(name, "corruption") < 10
+        Sleep(4.0)
+        ///REDACTED CODE///(name)
+        Sleep(1.0)
+        SetNumericData(name, "corruption", 100)
+    end
+
+    if Random() < 0.1
+        ///REDACTED CODE///(name)
+    end
+end
+
+
+
+
+#########
+
+
+##########
+
+
+DT 50
+
+=-_-=-_-=-_-=-_-=-_-=-_-=-_-=-_-=
+
+I need to get out more...
+
+
+
+Anyways, it's on the roof now. 
+Managed to move it. 
+Didn't mean to dig so deep and now...
+I can't get rid of it.
+Gotta tighten "security" on this shack.
+Can't have those SUITS snoopin' around,
+Like poor Roby. 
+
+These notes actually work when you
+haven't seen anyone for a couple o weeks.
+Like a diary but with important info
+And it's almost like I'm
+Uh
+
+Talking to myself =P
+
+
+DT 31
+
+
+___i keep forgetting to check this out____
+
+attn! 
+
+where does it come from? 
+that book looks weird
+I painted the eyes on the wall as a prank 
+mostly to safeguard?
+
+I must be going nuts. I should take a break... 
+I'm writing notes to myself again. 
+
+
+
+
+MD 6
+
+Construction of "THE DRILL"
+...........................
+
+[x] Energy Source
+[x] Target
+[ ] Security Assessment
+[x] Software
+
+
+
+===============
+===============
+===============
+
+Q: Where should we put it?
+
+ Experiment hall seems reasonable,
+ don't you think? /M.
+
+
+ MD 0
+
+ DAILY ROUTINE
+.............
+1. Wipe down computer screen
+2. Make sure keyboard is clean
+3. Log into computer, check messages
+4. Talk to your boss at least once a day
+5. At least 20 task must be finished each week
+6. Remember to say good bye to your colleagues before leaving
+7. Sleep at least 8 hours a night
+
+
+MD 9
+
+Name suggestions
+................
+
+* Drilly
+* Spear
+* Hammer
+* HELL MET
+* Bouncer-1
+* Tigerlily
+* BOBBY
+* Shark
+* Denter
+
+MD 2
+
+Health memo no 1
+................
+
+Exercise daily before bed.
+Remember to stretch after waking up.
+
+
+MD 7
+
+Christmas party
+...............
+
+Ideas: Songs, gifts, christmas tree.
+
+We'll send out instructions and regulations
+before January 1st. The plan is to improve
+morale and increase productivity by 18-20%
+
+Awaiting your approval.
+
+
+============
+============
+============
+
+Seems good to me.
+But how about one of those men with beards...?
+/M.
+
+
+
+================
+================
+================
+
+Dear Monad,
+
+Not sure what you're talking about. 
+Please get back to me ASAP.
+
+Best regards,
+T.2.
+
+
+
+
+
+FD 1
+
+
+TODO
+====
+
+1. revise safety regulations for the machine in hall 1
+2. negotiate with the union (no vacation this year)
+3. prepare for dinner with Dr. Monad on the 17th
+4. increase server room security, door etc
+
+
+
+
+DT 2
+
+rNow < _fovTimerGoal) rGoal) {
+        {
+
+nOutSine(_fovStart, _fovGoal, (_fovT
+            _fovTimerNow += Time.deltaTime;
+            if (_fovTimerNow >= _fovTime
+                _fovTimerS                  tart = _f
+    ovTimerNow = _fovTimerGoal;
+                SetFov(_fovStart = _fovGoal);
+            }
+_fovTimerGoal - _fovTimerStart)));else {
+                SetFov(iTween.easeI
+            }
+        }
+        else {
+            _fovTimerStart = _fovTim
+        }
+    }
+
+imerNow - _fovTimerStart) / (   erNow = _fovTimerGoal;
+
+
+
+DT 49
+
+Dear Monad,
+
+We need to increase ORE 
+quality by 50 - 70 % to
+be able to produce modifiers 
+in a reliable manner.
+
+Could we hire someone from
+your staff who can improve 
+the refinement program? 
+
+It's way too bad at the moment, 
+this won't do if we are to ramp 
+up production and start 
+delivering modifiers world-wide.
+
+- DAVE
+
+
+
+FD 4
+
+
+Refining process
+================
+
+The goods can be refined in 16
+unique positions.
+
+Currently the refine function
+has a 25% chance of error
+which will reset the goods' quality
+at the current position to
+'u', 'v', 'w', 'x', 'y' or 'z'
+
+
+
+FD 5
+TYPES
+=====
+["ore", "gold", "silver", "crystal", "iron"]
+
+QUALITY
+=======
+0 - 3 Abysmal
+4 - 5 Rough
+6 - 8 OK
+9     Great
+10    Perfect
+
+
+
+# - MEMORY KEYS -
+# W311SPRNG
+# MONADOOR
+
+
+FD 6
+
+MACHINE MANUAL PAGE 1
+
+Insert goods into pipe.
+Run program.
+Retrieve goods from machine.
+
+FD 7
+
+3000 hjydadzmn wt ocz ziy ja ocz tzvm.
+400 - 500f rdocdi ozi tzvmn.
+
+fzzk ocz kmjypxodji xjnon yjri.
+npbbznozy mzovdg kmdxz 199.
+izo kmjado vmjpiy 150 oj 160.
+
+ocz 3y-kmdiozm xvi kmjypxz wvndxvggt vit fdiy
+ja jwezxo. ajxpn ji hjydadzmn viy joczm xjhkpozm
+mzgvozy kmjypxon.
+
+omt oj dhkmjqz mzadidib kmjxznn hjmz.
+xpmmzio hzocjyn vmz ijo bjjy zijpbc.
+
+vgnj, zqzi ocjpbc do bjzn rdocjpo nvtdib:
+ocz czvmo *hpno* wz fzko nvaz.
+
+FD 8
+
+
+(M x) >>= f = f x
+
+FD 9
+
+
+- Buy milk
+- Call Sofia
+- Tidy room
+
+
+
+
+MT2
+
+I wonder if El Huervo wakes up every day 
+and starts off by screaming HELLO WORLD! 
+Yeah maybe "Surge" answers the question
+
+Kids and their wheels...
+*
+*
+*
+*
+*
+
+
+
+
+
+DT65
+
+
+# ADVICE ON CLEANLINESS
+
+Dancing in the rain
+Drinking water
+
+AVOID SLEEPING IN THE STREETS!
+BOOZE IS NO GOOD EITHER
+
+Smelliness(10) # what's that about?!
+
+BASTARDS!
+
+
+
+DT 29
+
+(defun fun (f)
+    (if (f)
+        (fun (f))
+        (not-fun)))
+
+
+
+
+DT 17
+
+
+Hello, how do I get out of here?!
+
+HELLO?!!!
+
+Can you hear me?
+
+Please...
+
+
+
+DT 26
+
+Drink types
+===========
+
+Coke
+Coffee
+Margarita
+Dry Martini
+Long Island Iced Tea
+Bloody Mary
+Beer
+
+
+
+DT 9
+
+Any effectively generated theory capable of
+expressing elementary arithmetic cannot be both 
+consistent and complete. In particular, for any 
+consistent, effectively generated formal theory
+that proves certain basic arithmetic truths, 
+there is an arithmetical statement that is true, 
+but not provable in the theory.
+
+
+
+///////cheap beer. ******
+you get free coke from every machine > 
+lil' bit o code > 
+i get drunk for no penny AT ALL
+.
+,
+/
+(suavest)
+.
+,
+/
+Urban has GOT TO SEE THIS 
+
+
+
+DT 18
+
+*/*\*/*\*/*\*
+ WHITE LADY
+*/*\*/*\*/*\*
+
+2   shots of dry gin
+3/4 shot triple sec
+3/4 shot fresh lemon juice
+1/3 shot sugar syrup
+
+  \***D/
+   \**/
+    \/
+    |
+    |
+   _|_
+
+Garnish with a slice of lemon.
+
+
+
+DT 11
+
+Letter from Rolf: Orgryte 6 September 1920. 
+Hi my love, how's life? Are you listening closely 
+and eating enough? Ive been thinking about what 
+you said. How come sound affects me so much? I 
+think it just brings back so many memories... 
+
+You and me practicing fishing in the meadow 
+while the birds sing... The sound of gravel 
+when you approached the house from the road...
+Would always make me glad! And that's why I just
+had to go here and collect some. I hope this 
+letter and disk reaches you some day and 
+that you can use what I found in youre future 
+computer programs. I must admit I dont get it
+with all this computers programing stuff but I 
+know you love it... 
+I just wish i would have found some of those 
+music disks i was told existed here...
+Maybe I'm looking in the wrong places.. 
+
+Anyways, loads of love! // Rolf
+
+
+
+
+DT 12
+
+On a beech tree rudely carved
+NC was here
+Why did she do it?
+Was she scared or sad?
+
+On a beech tree rudely carved
+NC loved me
+Why did she do it?
+Was she bored, or forced
+
+Do something pretty while you can
+Don't be a fool
+Reading the gospel to yourself is fine
+
+Do something pretty while you can
+Don't be afraid
+Skating a pirouette on ice is cool
+
+On a bus stop in town
+"We rule the school"
+Written for everyone to see and read
+
+On a bus stop in town
+"We rule the school"
+Written for everyone with eyes in their head
+
+Do something pretty while you can
+Don't fall asleep
+Driving from California to New York
+
+Call me a prophet if you like
+It's no secret
+You know the world is made for men
+You know the world is made for men
+You know the world is made for men
+Not us
+
+
+
+DT0
+1. Cran j
+2. Tea
+3. Coffee
+4. Mead
+5. Oran j
+6. Red W
+7. White White
+8. Beer
+9. Water
+
+
+DT26
+Drink types
+===========
+
+Coke
+Coffee
+Margarita
+Dry Martini
+Long Island Iced Tea
+Bloody Mary
+Beer
+
+
+DT52
+Neighbour,
+
+I had to leave. It'll probably be a logn time bfore you find this.
+
+Didn't have the guts to tell you myself...
+Gotta go. Dug too deep, went too far.
+
+As I slept _in_ my drug induced dreams
+And crept beyond borders. I have been destroyed.
+
+She's waiting for me at the 'Outpost'
+
+Yours truly,
+Albert
+
+
+DT15
+Programming might not be what you think.
+Programming might not be as hard as you think.
+Programming might be fun.
+Programming might be worth... a look.
+Programming might be... for you.
+Programming might..... completely fuck y up!
+
+
+
+AIGP1205
+PLANNING DOC AIGP 12-05
+-----------------------
+AUTHOR T3
+GOAL: Find "The Lodge"
+SITES TO INVESTIGAT:
+* Plaza
+  Several Slurp()
+  activities detected.
+* Harbor West House Room 1
+*REDACTED*
+
+* Blue Dot (Burrows)
+  Restaurant.
+  Yulian seen
+  around here.
+
+
+MT4
+"Hunger" Hank
+
+
+MT5
+"HoneyBee" Elsy
+
+
+
+# Hotel_Office_DoorToBasement
+# Hotel_Lobby_DoorToHotelExterior
+
+
+
+DT 21
+
+
+.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+THIS SENTENCE IS FALSE
+
+.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+
+.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+THE FOLLOWING STATEMENT IS FALSE
+THE PREVIOUS STATEMENT IS TRUE
+
+.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+
+
+
+DT 16
+
+
+Yeah...
+
+I've hidden it in the shack next to Elsa's house.
+She's got the key, I believe. Don't do anything stupid.
+
+Please.
+
+
+
+DT 33
+
+
+THE PATH IS MOSTLY CLEAR HERE
+
+I GUESS BUSINESS ISN'T EXACTLY BOOMING 
+HAHA
+
+FOR THEM AT LEAST :P
+
+ok what's your most ADVANCED emoticon?
+Ronny showed me something like this 
+
+))<>((
+
+Pooping back and forth
+forever
+.
+.
+.
+.
+.
+. 
+
+
+MT 1
+
+
+Even if you are a "Vagabond", always make sure your
+friends and family know how much you love them. 
+
+
+
+DT 7
+
+
+ It's like a human, but smaller
+ with a high-pitched voice
+
+ Few have seen them
+ Where have they gone?
+
+
+
+DT 5
+
+
+APIs
+=====
+
+(accessible with the screwdriver)
+
+- internet
+- arcade
+- floppy
+- memory
+- door
+
+
+# Are there more...?
+# /Zarah
+
+
+DT 64
+
+
+The 420 chillout:
+
+Connect ("RatvadersDreamEntrance")
+Slurp() 
+
+Whoever this Ratguy is 
+he knows how to pick 
+a spot. Preferebly go there 
+AT NIGHT 
+
+
+
+MT 10
+
+I don't even know why they thought it was Rouven. 
+It'd take a totally different kind of character  
+to dish out freebies like that... Only a true friend 
+looks out for you even in the darkest of times.  
+Old habits die hard.  A good gun will never "Rust".
+
+Ehe 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+fn main() {
+    let program = "+ + * - /";
+    let mut accumulator = 0i;
+
+    for token in program.chars() {
+        match token {
+            '+' => accumulator += 1,
+            '-' => accumulator -= 1,
+            '*' => accumulator *= 2,
+            '/' => accumulator /= 2,
+            _ => { /* ignore everything else */ }
+        }
+    }
+
+    println!("The program \"{}\" calculates the value {}",
+              program, accumulator);
+}
+
+
+DT 22
+
+folk.uib.no/hnohf
+
+
+DT 14
+
+# A test of an animated stick figure
+#
+# W=512, H=256
+ClearText()
+
+var animStep = 0.1
+var animate = true
+number x=10
+number y=130
+number speed=50
+
+var anim_walk = []
+var man_ps = []
+man_ps[0] = [15,0]  #HeadT
+man_ps[1] = [0,10]  #HeadL
+man_ps[2] = [30,10] #HeadR
+man_ps[3] = [15,20] #Neck
+man_ps[4] = [15,40] #Groin
+man_ps[5] = [5,30]  #ElbowL
+man_ps[6] = [20,30]  #ElbowR
+man_ps[7] = [3,40]  #HandL
+man_ps[8] = [30,38] #HandR
+man_ps[9] = [10,50]  #KneeL
+man_ps[10] = [20,45] #KneeR
+man_ps[11] = [0,60]  #FootL
+man_ps[12] = [30,60] #FootR
+anim_walk[0] = man_ps
+
+man_ps = []
+man_ps[0] = [15,1]  #HeadT
+man_ps[1] = [0,11]  #HeadL
+man_ps[2] = [30,11] #HeadR
+man_ps[3] = [15,21] #Neck
+man_ps[4] = [15,40] #Groin
+man_ps[5] = [7,30]  #ElbowL
+man_ps[6] = [17,30]  #ElbowR
+man_ps[7] = [10,40]  #HandL
+man_ps[8] = [25,38] #HandR
+man_ps[9] = [13,50]  #KneeL
+man_ps[10] = [19,45] #KneeR
+man_ps[11] = [0,55]  #FootL
+man_ps[12] = [26,60] #FootR
+anim_walk[1] = man_ps
+
+man_ps = []
+man_ps[0] = [15,2]  #HeadT
+man_ps[1] = [0,12]  #HeadL
+man_ps[2] = [30,12] #HeadR
+man_ps[3] = [15,22] #Neck
+man_ps[4] = [15,40] #Groin
+man_ps[5] = [10,30]  #ElbowL
+man_ps[6] = [14,30]  #ElbowR
+man_ps[7] = [20,40]  #HandL
+man_ps[8] = [20,38] #HandR
+man_ps[9] = [16,50]  #KneeL
+man_ps[10] = [17,45] #KneeR
+man_ps[11] = [5,55]  #FootL
+man_ps[12] = [22,60] #FootR
+anim_walk[2] = man_ps
+
+
+man_ps = []
+man_ps[0] = [15,2]  #HeadT
+man_ps[1] = [0,12]  #HeadL
+man_ps[2] = [30,12] #HeadR
+man_ps[3] = [15,22] #Neck
+man_ps[4] = [15,40] #Groin
+man_ps[5] = [15,30]  #ElbowL
+man_ps[6] = [8,30]  #ElbowR
+man_ps[7] = [25,40]  #HandL
+man_ps[8] = [15,38] #HandR
+man_ps[9] = [20,50]  #KneeL
+man_ps[10] = [15,45] #KneeR
+man_ps[11] = [15,56]  #FootL
+man_ps[12] = [15,60] #FootR
+anim_walk[3] = man_ps
+
+
+man_ps = []
+man_ps[0] = [15,1]  #HeadT
+man_ps[1] = [0,11]  #HeadL
+man_ps[2] = [30,11] #HeadR
+man_ps[3] = [15,21] #Neck
+man_ps[4] = [15,40] #Groin
+man_ps[5] = [20,30]  #ElbowL
+man_ps[6] = [3,30]  #ElbowR
+man_ps[7] = [30,40]  #HandL
+man_ps[8] = [10,38] #HandR
+man_ps[9] = [25,50]  #KneeL
+man_ps[10] = [14,45] #KneeR
+man_ps[11] = [20,56]  #FootL
+man_ps[12] = [8,60] #FootR
+anim_walk[4] = man_ps
+
+
+var man_ls = []
+man_ls = [[0,1],[0,2],[1,3],[2,3],[3,4],[3,5],[5,7],[3,6],[6,8],[4,9],[9,11],[4,10],[10,12]]
+
+
+number T = Time()
+number dT
+number aT = 0
+number ai = 0
+loop
+ dT = Time()-T
+ T = Time()
+
+ if (Time()-aT) > animStep
+  ai = ai + 1
+  ai = Mod(ai,Count(anim_walk))
+  if animate
+   man_ps = anim_walk[ai]
+  end
+  aT = Time()
+ end
+
+ x = Mod(x + dT * speed,512)
+ loop l in man_ls
+  var p1 = man_ps[l[0]]
+  var p2 = man_ps[l[1]] 
+  Line(x+p1[0],y+p1[1],x+p2[0],y+p2[1])    
+ end
+
+ # Ground
+ Line(0,y+61,512,y+61)
+
+ DisplayGraphics()
+end
+
+
+
+
+DT 8
+
+
+What a strange loop
+
+https://soundcloud.com/teebsio/for-phil
+
+
+DT 6
+
+
+* Curry
+* Church
+* Turing
+* McCarthy
+
+SetWorldPosition(“SecretArcade”, 1, 1)
+
+
+
+MT 8
+
+-It's called "Clarity"! 
+-What kind of weak ass name is that? 
+-Well, I thought the synthesizer sounded 
+ sort of enlightened in some way.
+
+
+DT 58
+
+
+Connect ("Lowenbrau")
+Slurp() 
+
+
+
+		   
+	  
+	  
+
+DT 55
+
+
+
+“Doublethink means the power of holding two contradictory 
+beliefs in one's mind simultaneously, 
+and accepting both of them.”
+
+
+		   
+	  
+	  
+DT 3
+10 PRINT "HELLO WORLD"
+20 GOTO 10
+
+
+
+DT 19
+The Three Monad Laws
+====================
+
+return a >>= k  ==  k a
+m >>= return  ==  m
+m >>= (\x -> k x >>= h)  ==  (m >>= k) >>= h
+
+
+DT 44
+Dispose Merman!!!!!
+
+
+DT 43
+
+###############
+
+*Talk to Longson
+
+- We can't have the Ministry AND
+the Factory dumping their weird 
+waste in the canal like this.
+The pH values are off the charts
+and the whole bay will sour if
+this continues.
+
+Fucking idiots. 
+
+
+
+
+MT 3
+
+- We have to escape! 
+- Escape?! 
+- It's called "we gotta split"! 
+- But why we gotta do that for?! 
+- Come on, the old guy's gonna call the cops! 
+- Yeah so what? 
+- We took a lot of food, 
+  coffee, 
+  drinks! 
+- Listen, we're shipwrecked right? 
+- Yeah...
+- Exactly, so then we're allowed to "Knobb" 
+  other people's stash, but alright...  
+  ...all hands on deck!
+
+
+
+  DT 60
+
+
+*****'''*****'''*****'''*****'''*****'''*****'''*****'''
+     *****'''*****'''*****'''*****'''*****'''*****
+	      *****'''*****'''*****'''*****'''*****
+		       *****'''*****'''*****'''*****'''
+			        *****'''*****'''*****'''
+					     *****'''*****'''
+						      *****'''
+							       **
+								   *
+								   '
+								    '
+								   '
+								    '
+								   '
+								    '
+								   '
+								    '
+								   '
+								    '
+								   '
+								    '
+									Better to leave before it all
+									falls
+									down.
+									The wrong people
+									The wrong hands
+									Never fear
+									The distant lands
+									
+	OK, time to leave this fucking town.
+	When some of them started disappearing
+	we should have taken it more seriously.
+	
+	Things aren't always what they seem. 
+	Good times never last.
+	Someone always has to ruin the fun.
+	
+	I hope Ratvader got rid of it!
+
+
+
+		   
+	  
+	  
+
+MANUALS
+
+
+===================================
+THE BEGINNER'S GUIDE TO THE MODIFIER
+===================================
+
+*** Chapter 11: Comments ***
+
+A comment in the code is ignored
+by the compiler. You can create
+a comment by typing the # sign.
+
+Any text on the line to the right
+of the # sign will be ignored.
+
+Be helpful to your future self
+and others - comment your code!
+
+
+
+
+===================================
+THE BEGINNER'S GUIDE TO THE MODIFIER
+===================================
+
+*** Chapter 5: Autocomplete ***
+
+The section at the lower part of your
+modifier ("help area") has a list of 
+functions available to you when programming.
+
+Start writing the name of a function
+to limit the number of options and 
+find it in the list of suggestions.
+
+If you press the TAB key, the highlighted
+option will be inserted into the code
+with a starting parenthesis: (
+
+When entering arguments to a function
+the help area will show documentation
+for each argument.
+
+
+
+===================================
+THE BEGINNER'S GUIDE TO THE MODIFIER
+===================================
+
+*** Chapter 4: Errors ***
+
+When errors are detected, either
+during compilation (see floppy 4)
+or when the program is running,
+execution will stop and the error
+will be presented in the "help area",
+the lower part of the modifier window.
+
+In case of a runtime error it's
+possible to start the program again,
+either by activating the object
+or by compiling the code again.
+
+
+
+===================================
+THE BEGINNER'S GUIDE TO THE MODIFIER
+===================================
+
+*** Chapter 2: The Compiler ***
+
+A compiler is a program that takes 
+source code in the form of 
+text and transforms it into
+something that can be executed 
+by the computer.
+
+If any errors are discovered
+during the compilation step
+they will be presented to the
+programmer in the "help area",
+the lower part of the modifier.
+
+
+
+
+DT 1 
+
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((variable? exp) (lookup-variable-value exp env))
+        ((quoted? exp) (text-of-quotation exp))
+        ((assignment? exp) (eval-assignment exp env))
+        ((definition? exp) (eval-definition exp env))
+        ((if? exp) (eval-if exp env))
+        ((lambda? exp)
+         (make-procedure (lambda-parameters exp)
+                         (lambda-body exp)
+                         env))
+        ((begin? exp) 
+         (eval-sequence (begin-actions exp) env))
+        ((cond? exp) (eval (cond->if exp) env))
+        ((application? exp)
+         (apply (eval (operator exp) env)
+                (list-of-values (operands exp) env)))
+        (else
+         (error "Unknown expression type -- EVAL" exp))))
+
+
+
+
+DT ???
+
+Connect ("Lowenbrau")
+Slurp() 
+
+
+
+
+
+Connect ("Hotel_Exterior_CurcuitLocker_1")
+Slurp () 
+
+
+ 
+ DT 39
+
+ SANDWICH DE HALLOUMI CHANTERELLE
+
+1 chunk of halloumi cheese
+1 avocado
+1 red onion
+1 ciabatta
+1 creme bonjour chanterelle
+1 pinch o' rucola salad
+
+Slice ciabatta
+Slice red onion
+Peel and slice avocado
+Fry halloumi
+
+Add all to ciabatta
+
+Super Classico!
+
+
+DT 6
+
+* Curry
+* Church
+* Turing
+* McCarthy
+
+SetWorldPosition(“SecretArcade”, 1, 1)
+
+
+DT 38
+
+Jacyś ludzie
+
+Jacyś ludzie w ucieczce przed jakimiś ludźmi.
+W jakimś kraju pod słońcem
+i niektórymi chmurami.
+
+Zostawiają za sobą jakieś swoje wszystko,
+obsiane pola, jakieś kury, psy,
+lusterka, w których właśnie przegląda się ogień.
+
+Mają na plecach dzbanki i tobołki,
+im bardziej puste, tym z dnia na dzień cięższe.
+
+Odbywa się po cichu czyjeś ustawanie,
+a w zgiełku czyjeś komuś chleba wydzieranie
+i czyjeś martwym dzieckiem potrząsanie.
+
+Przed nimi jakaś wciąż nie tędy droga,
+nie ten, co trzeba most
+nad rzeką dziwnie różową.
+Dokoła jakieś strzały, raz bliżej, raz dalej,
+w górze samolot trochę kołujący.
+
+Przydałaby się jakaś niewidzialność,
+jakaś bura kamienność,
+a jeszcze lepiej niebyłość
+na pewien krótki czas albo i długi.
+
+Coś jeszcze się wydarzy, tylko gdzie i co.
+Ktoś wyjdzie im naprzeciw, tylko kiedy, kto,
+w ilu postaciach i w jakich zamiarach.
+Jeśli będzie miał wybór,
+może nie zechce być wrogiem
+i pozostawi ich przy jakimś życiu.
+
+ 
+-Wislawa Szymborska
+
+
+DT 45
+
+Magazines XXX
+
+1. Fib Aktuellt 
+2. Aktuell Rapport
+3. Lektyr
+4. Paff
+
+
+DT 48
+
+---=== ATTENTION WORKERS ===---
+
+DO NOT TRY TO IMPROVE THE 
+REFINING ALGORITHM ON YOUR OWN.
+
+The rights to the algorithm are not
+owned by us and any changes must
+be signed off by me. I know that it's
+not efficient and that creating screwdrivers
+isn't exactly what we set out to do.
+
+But please, I have enough problems with 
+the Ministry as it is.
+
+- DAVE
+
+
+
+
+MONADOOR 38984312
+
+
+
+
+szczęściarz
+
+SetWorldPosition("HarbSouthSewer2", 85.5, 1.4662, -45.5)
+
+
+
+
+
+
+# For the T-boards
+
+loop n from 1 to 2
+    var id = Connect("RadioStation_Channel" + n)
+    # Calibrate
+    id.SetPitch(1.0)
+    #id.SetResonance(0.0)
+    #id.SetCutoff(5000.0)
+end
+
+
+
+
+number doorId = Connect("RadioElevatorController")
+doorId.SwapFloor()
+
+
+
+
+
+# MissingPersonFinder
+
+loop
+    ClearText()
+    Print("MissingPersonFinder")
+    Print("===================")
+    var name = Input("Enter name: ")
+    Print(GetPosition(name))
+    Sleep(1)
+end
+
+
+MT 13
+
+Hello El Huervo! It's been a while.. 
+How is that tomato plant doing? 
+I heard Kristian has Tomatos on his...
+
+Anyways, this song is "AllAboutYouToo"
+
+Crank that stuff up on your nearest 
+jukebox. PlaySound and all that.. 
+
+Loads of love from *Hello World* 
+:__:
+
+
+DT 56
+
+
+
+WHAT GOD IS HE, WRITES LAWS OF PEACE
+
+What God is he, writes laws of Peace, 
+and clothes him in a tempest
+What pitying Angels lusts for Tears, 
+and fans himself with sighs
+What crawling villain preaches abstinence,
+and wraps himself
+In fat of Lambs? 
+No more I FOLLOW
+NO MORE OBEDIENCE PAY
+
+
+		   
+	  
+	  
+
+DT 0
+
+You've picked a very sunny and private place to grow
+
+You have easy access to this space
+
+You can bring water to your plants when needed
+
+You're sure no one else knows about the spot. 
+As far as privacy, try leaving a few $5 bills in the area, 
+come back a few weeks later, if the $5 bills are still around, 
+you have some evidence that no one else 
+has visited this spot since you left.
+
+
+
+MT 6
+
+
+
+The complexity is intense! 
+
+It almost makes my head physically hurt! 
+
+I'm trying to to line up the robots 
+in favorable positions but it seems 
+as if my opponent always knows what I'm thinking.  
+
+I'm really "Confounded". I don't know what TO DO!!!
+
+
+
+
+
+void BroadcastMessage(string msg, array args)
+    array servers = []
+
+    Append(servers, "Hotel_ServerBasement_LargeComputerL3_LargeComputerL3_1")
+    Append(servers, "HarbWestHouseLobby_HugeComputer_HugeComputer_1")
+    Append(servers, "Factory_ServerRoom_LargeComputer1_LargeComputer1_1")
+
+    loop s in servers
+        var id = Connect(s)
+        
+        if id > -1
+            RemoteFunctionCall(id, msg, args)
+        else
+            Print("Invalid connection!")
+        end
+    end    
+end
+
+
+
+MT10
+
+
+I don't even know why they thought it was Rouven. 
+It'd take a totally different kind of character  
+to dish out freebies like that... Only a true friend 
+looks out for you even in the darkest of times.  
+Old habits die hard.  A good gun will never "Rust".
+
+Ehe 
+
+fn main() {
+    let program = "+ + * - /";
+    let mut accumulator = 0i;
+
+    for token in program.chars() {
+        match token {
+            '+' => accumulator += 1,
+            '-' => accumulator -= 1,
+            '*' => accumulator *= 2,
+            '/' => accumulator /= 2,
+            _ => { /* ignore everything else */ }
+        }
+    }
+
+    println!("The program \"{}\" calculates the value {}",
+              program, accumulator);
+}
+
+DT 40
+
+You've picked a very sunny and private place to grow
+
+You have easy access to this space
+
+You can bring water to your plants when needed
+
+You're sure no one else knows about the spot. 
+As far as privacy, try leaving a few $5 bills in the area, 
+come back a few weeks later, if the $5 bills are still around, 
+you have some evidence that no one else 
+has visited this spot since you left.
+
+
+
+
+HAMPE

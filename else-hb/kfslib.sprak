@@ -1,0 +1,319 @@
+##########################################################
+# kfsone's 'sprak' library.
+
+
+##########################################################
+# DEVICE NAMES
+
+string getPCName()
+	return "PoliceOfficeInterior_MinistryOfficeWorkstationComputer_1"
+end
+
+string getRecorderName()
+	return "PoliceOfficeInterior_LargeRecorder_LargeRecorder_1"
+end
+
+string getLargeComputerName()
+	return "Factory_ServerRoom_LargeComputerL3_LargeComputerL3_1"
+end
+
+string getExtractorName()
+	return "Hotel_ServerBasement_Extractor_1"
+end
+
+
+##########################################################
+# CONNECTIONS
+
+number getPC()
+	return Connect(getPCName())
+end
+
+number getRecorder()
+	return Connect(getRecorderName())
+end
+
+number getLargeComputer()
+	return Connect(getLargeComputerName())
+end
+
+number getExtractor()
+	return Connect(getExtractorName())
+end
+
+
+##########################################################
+# Configurables -- TODO: Move to a memory.
+
+string getInventory()
+	return "Sebastian_inventory"
+end
+
+string getStore()
+	return "Hotel_Room1"
+end
+
+string getModifier()
+	return "Hotel_Modifier"
+end
+
+
+##########################################################
+# LIBRARY FUNCTIONS
+
+
+# --------------------------------------------------------
+# Join's an array into a single string with separators
+# between entries.
+
+string Join(array items, string separator)
+	string combined = ""
+	if Count(items) > 1
+		combined = items[0]
+	end
+	loop i from 1 to Count(items)
+		combined += separator
+		combined += items[i]
+	end
+
+	return combined
+end
+
+
+# --------------------------------------------------------
+# Puts 'entry' at the end of onto, adding a comma
+# separator between entries: a, b, c
+
+string Listing(string onto, string entry)
+	if onto != ""
+		onto += ", "
+	end
+	return onto + entry
+end
+
+
+# --------------------------------------------------------
+# Returns a logging Timestamp
+
+string Timestamp()
+	return "["+GetHour()+":"+GetMinute()+"]"
+end
+
+
+# --------------------------------------------------------
+# Generic logging function
+
+void LogMessage(string text)
+	Print(Timestamp() + " -- " + text)
+end
+
+
+# --------------------------------------------------------
+# Find an anchor suitable for 'SetPosition' for a destination
+
+string GetPositionForTarget(string target)
+    var pc = getPC()
+    var room = pc.GetRoom(target)
+    if room != ""
+        return target
+    end
+    var things = pc.GetThingsInRoom(target)
+    return things[0]
+end
+
+
+# --------------------------------------------------------
+# Find the appropriate room for a particular target.
+
+string GetRoomForTarget(string target)
+    var pc = getPC()
+    if pc.GetTypeOfThing(target) == "character"
+        return target
+    end
+    var room = pc.GetRoom(target)
+    if room == ""
+        return target
+    end
+    return room
+end
+
+
+# --------------------------------------------------------
+# Send a person to a target object/room/etc.
+# TODO: Handle doors.
+
+void SendPerson(string subject, string target)
+	var targetType = getPC().GetTypeOfThing(target)
+	if targetType == "door"
+		Connect(target).Goto(target)
+	else if targetType == "room"
+		loop item in getPC().GetThingsOfType("door")
+			if getPC().GetRoom(item) == target
+				Connect(item).Goto(item)
+			end
+		end
+	else
+		# The 'recorder' needs to be at my position to be able to
+		# send me somewhere.
+	    var tgtit = GetPositionForTarget(target)
+	    getPC().SetPosition(getRecorderName(), GetUser())
+
+		# Now it can issue a MovePerson.
+	    getRecorder().MovePerson(subject, tgtit)
+	end
+end
+
+
+# --------------------------------------------------------
+# Move an item to another room/person/inventory/object
+
+void SetItemPosition(string item, string target)
+    var pc = getPC()
+    pc.SetPosition(item, target)
+    pc.SetPosition(item, GetPositionForTarget(target))
+end
+
+
+# --------------------------------------------------------
+# Transfer an item to the "store", I use hotel_room1.
+
+void StashItem(string item)
+    SetItemPosition(item, getStore())
+end
+
+
+# --------------------------------------------------------
+# Fetch an item to the player's inventory
+
+void FetchItem(string item)
+    SetItemPosition(item, getInventory())
+end
+
+
+# --------------------------------------------------------
+# Either fetch or stash the modifier so we can easily be
+# rid of it or have it to hand.
+
+void ToggleModifier()
+    var item = getModifier()
+    if getPC().GetRoom(item) == getInventory()
+        Say("Stashing")
+        StashItem(item)
+    else
+        Say("Fetching")
+        FetchItem(item)
+    end
+end
+
+
+# --------------------------------------------------------
+# Move Sebastian to a particular person.
+
+void GotoPerson(string person)
+    var pc = getPC()
+    if pc.GetRoom("Sebastian") != pc.GetRoom(person)
+        SendPerson("Sebastian", person)
+    end
+end
+
+
+# --------------------------------------------------------
+# Get things of type from room
+
+array GetThingsOfTypeInRoom(string type, string room)
+	var pc = getPC()
+	var contents = pc.GetThingsInRoom(room)
+	array items
+	loop item in contents
+		if pc.GetTypeOfThing(item) == type
+			Append(items, item)
+		end
+	end
+	return items
+end
+
+
+# --------------------------------------------------------
+# Open a connection; if the thing is a person or a room,
+# find something there to connect to.
+
+void ConnectTo(string subject)
+	string anchor = subject
+	if getPC().GetTypeOfThing(subject) == "character"
+		anchor = getPC().GetRoom(subject)
+		Print("-- " + subject + " is in " + anchor)
+	end
+	if getPC().GetRoom(anchor) == ""		# denotes a room
+		var candidates = GetThingsOfTypeInRoom("fusebox", anchor)
+		if Count(candidates) > 0
+			Print("-- Using fusebox " + candidates[0])
+		else
+			candidates = GetThingsOfTypeInRoom("door", anchor)
+			if Count(candidates) > 0
+				Print("-- Using door " + candidates[0])
+			else
+				candidates = getPC().GetThingsInRoom(anchor)
+				Print("-- Using thing " + candidates[0])
+			end
+		end
+		anchor = candidates[0]
+	end
+	Connect(anchor)
+	return anchor
+end
+
+
+# --------------------------------------------------------
+# REPL interface for common commands.
+### TODO: Fetch
+
+void SebOS()
+	string cmds = "con, disc, go, home, net, pix, where"
+	string subject
+	loop
+		var cmd = Input("SebOS> ")
+		if cmd == "con"
+			subject = Input("To> ")
+			if subject != ""
+				ConnectTo(subject)
+			end
+		else if cmd == "disc"
+			DisconnectAll()
+			Print("-- Disconnected")
+		else if cmd == "go"
+			subject = Input("To> ")
+			if subject != ""
+				SendPerson(GetUser(), subject)
+			end
+		else if cmd == "home"
+			SendPerson(GetUser(), "Hotel_Room1")
+		else if cmd == "net"
+			Connect("Internet_FuseBox_1")
+			Slurp()
+		else if cmd == "pix"
+			GotoPerson("Pixie")
+		else if cmd == "where"
+			subject = Input("Subject> ")
+			if subject != ""
+				Print(getPC().GetRoom(subject))
+			end
+		else if cmd == "who"
+			Print(GetConnections())
+		else if cmd != ""
+			Print("Command not recognized:")
+			Print("Options: " + cmds)
+		end
+		Print("------------------------------")
+	end
+end
+
+
+# --------------------------------------------------------
+# 'main()' for this machine.
+
+Print("")
+Sleep(0.1)
+LogMessage("Library loaded")
+PlaySound("Computer 1")
+SebOS()
+
