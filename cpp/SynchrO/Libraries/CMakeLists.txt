@@ -1,0 +1,3 @@
+set (CLSOCKET_SHARED OFF CACHE BOOL "" FORCE)
+set (CLSOCKET_BUILD_DEP_ONL ON CACHE BOOL "" FORCE)
+add_subdirectory ( clsocket )
