@@ -67,13 +67,15 @@ end
 # between entries.
 
 string Join(array items, string separator)
-	string combined = ""
-	if Count(items) > 1
-		combined = items[0]
+	if Count(items) == 0
+		return ""
 	end
-	loop i from 1 to Count(items)
-		combined += separator
-		combined += items[i]
+	string combined = items[0]
+	if Count(items) > 1
+		loop i from 1 to Count(items) - 1
+			combined += separator
+			combined += items[i]
+		end
 	end
 
 	return combined
@@ -85,7 +87,7 @@ end
 # separator between entries: a, b, c
 
 string Listing(string onto, string entry)
-	if onto != ""
+	if onto != "" and entry != ""
 		onto += ", "
 	end
 	return onto + entry
@@ -264,11 +266,38 @@ end
 
 
 # --------------------------------------------------------
+# Search for needle in a haystack
+
+array grep(array items, string needle)
+	var rec = getRecorder()
+
+	array found
+	loop item in items
+		if rec.StringContains(item, needle)
+			Print(item)
+			Append(found, item)
+		end
+	end
+	return found
+end
+
+
+# --------------------------------------------------------
+# Join an array, Print it, and then copy it to the CopyToClipboard
+
+void ReportArray(array items)
+	string list = Join(items, ",")
+	Print(list)
+	getExtractor().CopyToClipboard(list)
+end
+
+
+# --------------------------------------------------------
 # REPL interface for common commands.
 ### TODO: Fetch
 
 void SebOS()
-	string cmds = "con, disc, go, home, net, pix, where"
+	string cmds = "con, cons, dir, disc, fetch, go, grep, home, net, places, pix, where, who"
 	string subject
 	loop
 		var cmd = Input("SebOS> ")
@@ -277,13 +306,47 @@ void SebOS()
 			if subject != ""
 				ConnectTo(subject)
 			end
+		else if cmd == "cons"
+			ReportArray(getPC().GetConnections())
+		else if cmd == "dir"
+			subject = Input("Room> ")
+			if subject != ""
+				ReportArray(getPC().GetThingsInRoom(subject))
+			end
 		else if cmd == "disc"
 			DisconnectAll()
 			Print("-- Disconnected")
+		else if cmd == "fetch"
+			subject = Input("Item> ")
+			if subject != ""
+				if getPC().GetTypeOfThing(subject) != ""
+					FetchItem(subject)
+				else
+					Say("Unknown item")
+				end
+			end
 		else if cmd == "go"
 			subject = Input("To> ")
 			if subject != ""
 				SendPerson(GetUser(), subject)
+			end
+		else if cmd == "grep"
+			subject = Input("Search> ")
+			if subject != ""
+				array results = grep(getPC().GetPeople(), subject)
+				array rooms = getPC().GetAllRooms()
+				loop room in grep(rooms, subject)
+					Append(results, room)
+				end
+				loop room in rooms
+					loop item in grep(getPC().GetThingsInRoom(room), subject)
+						Append(results, item)
+					end
+					if Count(results) == 0
+						PrintS(".")
+					end
+				end
+				getExtractor().CopyToClipboard(Join(results, ", "))
 			end
 		else if cmd == "home"
 			SendPerson(GetUser(), "Hotel_Room1")
@@ -292,13 +355,15 @@ void SebOS()
 			Slurp()
 		else if cmd == "pix"
 			GotoPerson("Pixie")
+		else if cmd == "places"
+			ReportArray(getPC().GetAllRooms())
 		else if cmd == "where"
 			subject = Input("Subject> ")
 			if subject != ""
 				Print(getPC().GetRoom(subject))
 			end
 		else if cmd == "who"
-			Print(GetConnections())
+			ReportArray(getPC().GetPeople())
 		else if cmd != ""
 			Print("Command not recognized:")
 			Print("Options: " + cmds)
