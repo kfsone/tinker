@@ -16,15 +16,15 @@ bool HashTrie::forEachImpl(foreach_generator gen, const Node* cur, uint8_t depth
 	return false;
 }
 
+
 HashTrie::Node* HashTrie::Branch::child(const hash_t& hash, size_t depth)
 {
 	mOccupancy++;
-	HashTrie::unit_type part = hash.at(depth);
+	HashTrie::unit_type part = hash[depth];
 	auto it = mMapping.find(part);
 	if (it == mMapping.end())
 	{
-		auto insertion = mMapping.emplace(part, std::make_unique<Leaf>(hash));
-		auto it = insertion.first;
+		mMapping.emplace(part, std::make_unique<Leaf>(hash));
 		return nullptr;
 	}
 
@@ -35,12 +35,13 @@ HashTrie::Node* HashTrie::Branch::child(const hash_t& hash, size_t depth)
 		HashTrie::NodePtr oldLeaf = std::exchange(child, std::make_unique<Branch>());
 		Branch* newBranch = dynamic_cast<Branch*>(child.get());
 		// add the previous leaf as a child one level below its previous position
-		newBranch->mMapping.emplace(oldLeaf->getHash().at(++depth), std::move(oldLeaf));
+		newBranch->mMapping.emplace(oldLeaf->getHash()[++depth], std::move(oldLeaf));
 		newBranch->mOccupancy++;
 	}
 
 	return child.get();
 }
+
 
 void HashTrie::add(const hash_t& hash)
 {
@@ -48,8 +49,8 @@ void HashTrie::add(const hash_t& hash)
 	// check for duplicates. We naively add hashes and only check
 	// if we exhaust unique parts to match against (i.e. a dupe)
 
-	HashTrie::Node* cur = &mRoot;
 	uint8_t depth = 0;
+	HashTrie::Node* cur = &mRoot;
 	while (true)
 	{
 		// Has this node already seen this part?
@@ -66,6 +67,7 @@ void HashTrie::add(const hash_t& hash)
 		if (depth == MaxUnits)
 			throw std::runtime_error("Duplicate found");
 	}
+
 	if (depth > mMaxDepth)
 		mMaxDepth = depth;
 }

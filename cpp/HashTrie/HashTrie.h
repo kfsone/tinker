@@ -3,17 +3,19 @@
 #include <array>
 #include <cstdint>
 #include <memory>
-#include <unordered_map>
+#include <map>
 
+
+class NodeAllocator;
 
 // Builds a Trie based on 256-bit (32 byte) hex hashes, determining
 // the maximum number of 'units' (2-byte values) required to uniquely
-// identify 
+// identify
 class HashTrie final
 {
 public:
 	static constexpr	size_t HashBits = 256;
-	using				unit_type = uint16_t;
+	using				unit_type = uint8_t;
 
 	static constexpr	size_t UnitSize = sizeof(unit_type);
 	static constexpr	size_t MaxUnits = HashBits / (8 * UnitSize);
@@ -24,7 +26,7 @@ private:
 	// Forward declares/typedefs.
 	class Node;
 	using NodePtr = std::unique_ptr<Node>;
-	using UnitMap = std::unordered_map<unit_type, NodePtr>;
+	using UnitMap = std::map<unit_type, NodePtr>;
 
 	// Base class for describing nodes in the trie.
 	class Node
@@ -34,7 +36,7 @@ private:
 		virtual ~Node() = default;
 
 		virtual bool		getIsLeaf()					const	noexcept = 0;
-		virtual uint8_t		getOccupancy()				const	noexcept = 0;
+		virtual uint32_t	getOccupancy()				const	noexcept = 0;
 		virtual hash_t		getHash()					const	noexcept { return hash_t{}; }
 
 		virtual	Node* child(const hash_t& hash, size_t depth) = 0;
@@ -52,7 +54,7 @@ private:
 		virtual ~Leaf() {}
 
 		virtual bool		getIsLeaf()					const	noexcept override { return true; }
-		virtual uint8_t		getOccupancy()				const	noexcept override { return 1; }
+		virtual uint32_t	getOccupancy()				const	noexcept override { return 1; }
 		virtual hash_t		getHash()					const	noexcept override { return mHash; }
 		virtual Node*		child(const hash_t& hash, size_t depth)		 override { throw std::logic_error("Unbranched leaf."); }
 	};
@@ -73,7 +75,7 @@ private:
 		virtual ~Branch() = default;
 
 		virtual bool		getIsLeaf()					const	noexcept override { return false; }
-		virtual uint8_t		getOccupancy()				const	noexcept override { return mOccupancy; }
+		virtual uint32_t	getOccupancy()				const	noexcept override { return mOccupancy; }
 		virtual Node*		child(const hash_t& hash, size_t depth)		 override;
 
 		const UnitMap&		getMapping()				const	noexcept { return mMapping; }
@@ -94,6 +96,7 @@ private:
 		}
 	};
 
+	friend class NodeAllocator;
 
 	// The top-level Branch forms the root of the trie.
 	Root		mRoot{};
