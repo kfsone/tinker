@@ -1,25 +1,24 @@
 # Ignore these *anywhere* they occur
 
-*.pyc						# compiled python files
-__pycache__/				# compiled python folders
-.idea/						# idea-based editor configs
-.vs/						# visual studio projects
-.vscode/					# visual studio code projects
+*.pyc
+__pycache__/
+.idea/
+.vs/
+.vscode/
 
 # Python-specific ignores
-/python/*.spec				# spec files
-/python/dist/				# distribution directories
-/python/.venv*/				# virtual environments
-/python/**/.ipynb*/			# jupyter notebook folders
-/python/**/.ipynb*			# jupyter notebook files
+/python/*.spec
+/python/dist/
+/python/**/.ipynb*/
+/python/**/.ipynb*
 
 # C++ ignores
-/cpp/*/Debug/				# debug builds
-/cpp/*/Release/				# release builds
+/cpp/*/Debug/
+/cpp/*/Release/
 /cpp/*/RelWithDebInfo/
 /cpp/**/*.vcxproj.filters
 /cpp/**/*.vcxproj.user
-/cpp/**/*.vsp				# performance profiles
+/cpp/**/*.vsp
 
 # C# ignores
 /csharp/**/obj/
