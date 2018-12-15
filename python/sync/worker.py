@@ -1,5 +1,5 @@
 from argparse import Namespace
-from multiprocessing import Queue
+from queue import Queue, Empty
 from threading import Thread
 from typing import Any, Callable, List, Union
 
@@ -65,16 +65,26 @@ class Worker(Thread):
 
         terminator = self.TERMINATOR
 
+        self._logger.debug("%s running", self._callback.__name__)
+
         try:
             while True:
-                data = qget()
-                if data == terminator:
-                    break
-                oper(self._args, client, data, nextq)
+                try:
+                    data = qget(timeout=5.0)
+                    if data == terminator:
+                        self._logger.debug("%s received terminator", self._callback.__name__)
+                        break
+                    oper(self._args, client, data, nextq)
+                except Empty:
+                    if client:
+                        client.ping()
         finally:
+
+            self._logger.debug("%s terminated", self._callback.__name__)
 
             # Terminator received; forward.
             if nextq:
+                self._logger.debug("%s forwarding terminator to %s", self._callback.__name__, nextq._callback.__name__)
                 nextq.put(terminator)
 
             if client:
@@ -82,7 +92,10 @@ class Worker(Thread):
 
 
     def close(self):
+        name = self._callback.__name__
+        self._logger.debug("%s closing", name)
         self._queue.put(self.TERMINATOR)
+        self._logger.debug("%s sent TERMINATOR", name)
         self.join()
-
+        self._logger.debug("%s joined", name)
 

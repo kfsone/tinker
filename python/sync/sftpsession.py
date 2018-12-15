@@ -34,6 +34,10 @@ class SSHSession(object):
             return rc
 
 
+    def ping(self):
+        self.execute('echo')
+
+
     def close(self):
         if self.client:
             self.logger.debug("Shutting down SSH session")
@@ -53,6 +57,11 @@ class SFTPSession(object):
         if initial_path:
             self.logger.debug("remote cd: %s", initial_path)
             sftp.chdir(initial_path)
+
+
+    def ping(self):
+        self.client.stat('.')
+
 
     def close(self):
         if self.client:

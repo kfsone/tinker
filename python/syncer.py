@@ -59,8 +59,27 @@ def dry_check(dry_run: bool, function: Any, args: Union[List[Any], None]=None, k
         return function(*args, **kwargs)
 
 
+yamlcmt   = re.compile('^\s*[;#]').match
+
+class ArgParseWithYamlFromFile(argparse.ArgumentParser):
+
+    def convert_arg_line_to_args(self, arg_line):
+        arg_line = arg_line.strip()
+        if yamlcmt(arg_line):
+            return ()
+        l, _, r = arg_line.partition(' ')
+        return (l,) if not r else (l, r)
+
+
+def initialize_trash(config: argparse.Namespace):
+    # Delete any existing trash bin and then create a new one.
+    if os.path.exists(config.trash_path):
+        logger.info("Removing previous %s", config.trash_path)
+        dry_check(config.dry_run, shutil.rmtree, (config.trash_path,))
+
+
 def parse_arguments(arglist):
-    parser = argparse.ArgumentParser("sync")
+    parser = ArgParseWithYamlFromFile("syncer", fromfile_prefix_chars='@')
 
     parser.add_argument("--username", required=True,
                     help="Login name for the remote host")
@@ -89,7 +108,10 @@ def parse_arguments(arglist):
     if not os.access(config.local, os.W_OK):
         raise ValueError("Local path is not writable: %s" % config.local)
 
-    config.exclude = re.compile('|'.join(config.exclude + [TRASH_FOLDER]))
+    config.exclude    = re.compile('|'.join(config.exclude + [TRASH_FOLDER]))
+
+    config.trash_path = os.path.normpath(os.path.join(config.local, TRASH_FOLDER))
+    initialize_trash(config)
 
     # Check we can connect to the remote host:
 #    try:
@@ -106,12 +128,12 @@ def parse_arguments(arglist):
     return config
 
 
-def create_dir(config, relpath, name, mtime):
-    full_path = os.path.normpath(os.path.join(config.local, relpath, name))
+def create_dir(config, rel_path, name, mtime):
+    full_path = os.path.normpath(os.path.join(config.local, rel_path, name))
     if os.path.exists(full_path):
         shutil.rmtree(full_path)
     os.makedirs(full_path)
-    touch(config.local, posixpath.join(relpath, name), mtime)
+    touch(config.local, posixpath.join(rel_path, name), mtime)
     logger.info("Created: %s", full_path)
 
 
@@ -155,7 +177,7 @@ def create_file(local_path: str, name: str, size: int, mtime: int, callback=None
     return size
 
 
-def move_to_trash(local_path: str, deleted_items, dry_run=False):
+def move_to_trash(config: argparse.Namespace, rel_path: str, deleted_items, dry_run=False):
     """
     Move items from the local path to the sync trash bin, a safe delete.
     """
@@ -164,49 +186,39 @@ def move_to_trash(local_path: str, deleted_items, dry_run=False):
         logger.debug("No items to delete.")
         return
 
-    # Delete any existing trash bin and then create a new one.
-    trash_path = os.path.normpath(os.path.join(local_path, TRASH_FOLDER))
-    if os.path.exists(trash_path):
-        logger.info("Removing previous %s", trash_path)
-        dry_check(dry_run, shutil.rmtree, (trash_path,))
-    logger.info("Creating %s for %d deletions", trash_path, len(deleted_items))
+    trash_path = os.path.normpath(os.path.join(config.trash_path, rel_path))
     dry_check(dry_run, os.makedirs, (trash_path,))
 
-    # Build a list of only the items whose folders aren't being moved.
-    # e.g. if dir1/dir2 is being moved, we don't need to move dir1/dir2/f1.txt
-    moves = {
-        item for item in deleted_items if os.path.dirname(item) not in deleted_items
-    }
-    logger.debug("Don't need to move: %s", (deleted_items - moves))
+    local_path = os.path.normpath(os.path.join(config.local, rel_path))
 
-    for item in moves:
-        src = os.path.normpath(os.path.join(local_path, item))
-        dst = os.path.normpath(os.path.join(trash_path, item))
+    for item in deleted_items:
+        src = os.path.join(local_path, item)
+        dst = os.path.join(trash_path, item)
         assert src != dst
         dry_check(dry_run, os.renames, (src, dst))
-        logger.spam("Moved %s to %s", item, TRASH_FOLDER)
+        logger.spam("Moved %s to %s", src, TRASH_FOLDER)
 
     logger.info("%d items moved to %s.", len(deleted_items), trash_path)
 
 
-def touch(root, relpath, mtime=None):
+def touch(root, rel_path, mtime=None):
     """ Update the modified time of a file """
     mtime = (mtime, mtime) if mtime else None
-    os.utime(os.path.normpath(os.path.join(root, relpath)), mtime)
+    os.utime(os.path.normpath(os.path.join(root, rel_path)), mtime)
 
 
-def get_remote_files(sftp: SFTPSession, relpath: str):
-    logger.debug("remote: %s", relpath)
+def get_remote_files(sftp: SFTPSession, rel_path: str):
+    logger.debug("remote: %s", rel_path)
     return {
         str(attrs.filename): attrs
-        for attrs in sftp.client.listdir_iter(relpath)
+        for attrs in sftp.client.listdir_iter(rel_path)
         if not is_symlink(attrs)
     }
 
 
-def get_local_files(root: str, relpath: str,
+def get_local_files(root: str, rel_path: str,
                     normalize=os.path.normpath, joinpath=os.path.join):
-    local_path = normalize(joinpath(root, relpath))
+    local_path = normalize(joinpath(root, rel_path))
     logger.debug("local: %s", local_path)
     try:
         generator = os.scandir(local_path)
@@ -219,34 +231,34 @@ def get_local_files(root: str, relpath: str,
     }
 
 
-def filtered(relpath, stats, exclude_re):
+def filtered(rel_path, stats, exclude_re):
     match = exclude_re.match
     join = posixpath.join
     return {
             k: e for k, e in stats.items()
-            if not match(join(relpath, k))
+            if not match(join(rel_path, k))
     }
 
 
-def get_path_deltas(relpath, config, sftp, sum_worker, dl_worker):
+def get_path_deltas(rel_path, config, sftp, sum_worker, dl_worker):
 
-    remote_stats = filtered(relpath, get_remote_files(sftp, relpath), config.exclude)
-    logger.spam("%s: remote_stats: %s", relpath, remote_stats)
+    remote_stats = filtered(rel_path, get_remote_files(sftp, rel_path), config.exclude)
+    logger.spam("%s: remote_stats: %s", rel_path, remote_stats)
 
-    children     = list(posixpath.join(relpath, n) for n, st in remote_stats.items() if is_dir(st))
+    children     = list(posixpath.join(rel_path, n) for n, st in remote_stats.items() if is_dir(st))
 
-    local_stats  = filtered(relpath, get_local_files(config.local, relpath), config.exclude)
-    logger.spam("%s: local_stats: %s", relpath, local_stats)
+    local_stats  = filtered(rel_path, get_local_files(config.local, rel_path), config.exclude)
+    logger.spam("%s: local_stats: %s", rel_path, local_stats)
 
     remote_set   = set(remote_stats.keys())
     local_set    = set(local_stats.keys())
-    logger.debug("%s: remotes: %s, locals: %s", relpath, remote_set, local_set)
+    logger.spam("%s: remotes: %s, locals: %s", rel_path, remote_set, local_set)
 
     added        = remote_set - local_set
     removed      = local_set  - remote_set
     persisted    = remote_set - (added | removed)
 
-    logger.debug("%s: added: %s, removed: %s, persisted: %s", relpath, added, removed, persisted)
+    logger.spam("%s: added: %s, removed: %s, persisted: %s", rel_path, added, removed, persisted)
 
     need_sum     = []
 
@@ -264,7 +276,7 @@ def get_path_deltas(relpath, config, sftp, sum_worker, dl_worker):
 
         # If size changes, ignore on directories but force download files.
         if lhs_file and lhs.st_size != rhs.st_size:
-            dl_worker.put(DownloadItem(relpath, name, lhs.st_size, lhs.st_mtime))
+            dl_worker.put(DownloadItem(rel_path, name, lhs.st_size, lhs.st_mtime))
             continue
 
         # If the mtime changes, for a file, check the MD5 sum, for a dir,
@@ -273,22 +285,22 @@ def get_path_deltas(relpath, config, sftp, sum_worker, dl_worker):
             if lhs_file:
                 need_sum.append(lhs)
             else:
-                dry_check(config.dry_run, touch, (config.local, os.path.join(relpath, name), lhs.st_mtime))
+                dry_check(config.dry_run, touch, (config.local, os.path.join(rel_path, name), lhs.st_mtime))
 
     if need_sum:
-        sum_worker.put((relpath, need_sum))
+        sum_worker.put((rel_path, need_sum))
 
     return {k: remote_stats[k] for k in added}, removed, children
 
 
 def sum_work(config: argparse.Namespace, client: SSHSession, data: Tuple[str, List[SFTPAttributes]], nextq: Worker) -> None:
     # data is a tuple(relative path, list(FileEntity))
-    relpath, need_sum = data
+    rel_path, need_sum = data
     info = { str(e.filename): (e.st_size, e.st_mtime) for e in need_sum }
 
     # Issue a remote md5sum command for just the files
     filenames = "\0".join(e.filename for e in need_sum) + "\0"
-    cmd = "cd '%s' && xargs -0 md5sum --binary" % (posixpath.join(config.remote, relpath))
+    cmd = "cd '%s' && xargs -0 md5sum --binary" % (posixpath.join(config.remote, rel_path))
 
     logger.info("Fetching %d remote checksums", len(filenames))
     logger.debug(cmd)
@@ -304,7 +316,7 @@ def sum_work(config: argparse.Namespace, client: SSHSession, data: Tuple[str, Li
         hashes[filename] = checksum.lower()
 
     for filename, remote_hash in hashes.items():
-        filepath = posixpath.join(relpath, filename)
+        filepath = posixpath.join(rel_path, filename)
 
         fullpath = os.path.normpath(os.path.join(config.local, filepath))
         with open(fullpath, "rb") as fh:
@@ -314,22 +326,28 @@ def sum_work(config: argparse.Namespace, client: SSHSession, data: Tuple[str, Li
 
         if local_hash != remote_hash:
             logger.info("%s: remote:%s, local:%s", filepath, remote_hash, local_hash)
-            nextq.put(DownloadItem(relpath, filename, *info[filename]))
+            nextq.put(DownloadItem(rel_path, filename, *info[filename]))
         else:
             mtime = info[filename][1]
             logger.debug("Hash match for %s -> touching %d", filepath, mtime)
             touch(config.local, filepath, mtime)
+
+
+def dl_progress(filename: str, bytes_dl: int, bytes_ttl: int) -> None:
+    logger.info("%s: {:9n}/{:9n}".format(filename, bytes_dl, bytes_ttl))
     
 
 def dl_work(config: argparse.Namespace, sftp: SFTPSession, data: DownloadItem, nextq: Worker) -> None:
-    remote_path = posixpath.join(config.remote, data.path, data.name)
+    rel_path = posixpath.join(data.path, data.name)
+    remote_path = posixpath.join(config.remote, rel_path)
     logger.info("Downloading %s (%.2fKb)", remote_path, data.size / 1024)
     if config.dry_run:
         return
 
-    local_path  = os.path.join(config.local, data.path)
+    local_path = os.path.join(config.local, data.path)
     sized = create_file(local_path, data.name, data.size, data.mtime, callback=lambda fl:
-                            sftp.client.getfo(remote_path, fl)
+                            sftp.client.getfo(remote_path, fl,
+                                        lambda dl, ttl: dl_progress(rel_path, dl, ttl))
     )
     logger.debug("Downloaded %d bytes", sized)
 
@@ -355,30 +373,31 @@ def main(config: argparse.Namespace):
     try:
         while dir_queue:
 
-            relpath = dir_queue.pop(0)
-            logging.info('~ %s', relpath)
-            added, removed, children = get_path_deltas(relpath, config, sftp, sum_worker, dl_worker)
+            rel_path = dir_queue.pop(0)
+            logging.info('~ %s', rel_path)
+            added, removed, children = get_path_deltas(rel_path, config, sftp, sum_worker, dl_worker)
 
             # Remove anything that needs deleting first, so that if we have items that
             # changed type (e.g a file became a folder), we delete it before trying to
             # create anything. Also ensures we free up space where possible before adding
             # to usage.
             if removed:
-                local_path = os.path.normpath(os.path.join(config.local, relpath))
-                move_to_trash(local_path, removed, config.dry_run)
+                move_to_trash(config, rel_path, removed, config.dry_run)
 
             # Now add things.
             for name, remote_stat in added.items():
                 if is_file(remote_stat):
-                    dl_worker.put(DownloadItem(relpath, name, remote_stat.st_size, remote_stat.st_mtime))
+                    dl_worker.put(DownloadItem(rel_path, name, remote_stat.st_size, remote_stat.st_mtime))
                 else:
-                    dry_check(config.dry_run, create_dir, args=(config, relpath, name, remote_stat.st_mtime))
+                    dry_check(config.dry_run, create_dir, args=(config, rel_path, name, remote_stat.st_mtime))
 
             # If this gave us child directories, add them.
             dir_queue.extend(children)
 
     finally:
+        logger.debug("Closing workers")
         sum_worker.close()
+        logger.debug("Finished")
 
 
 if __name__ == "__main__":
