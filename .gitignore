@@ -12,3 +12,6 @@ cpp/*/Release
 cpp/**/*.vcxproj.filters
 cpp/**/*.vcxproj.user
 cpp/**/*.vsp
+csharp/**/obj
+csharp/**/bin
+
