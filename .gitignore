@@ -5,8 +5,10 @@ __pycache__
 .vscode
 python/*.spec
 python/dist
-python/.venv
+python/.venv*
+python/**/.ipynb*
 cpp/*/Debug
 cpp/*/Release
-*.vcxproj.filters
-*.vcxproj.user
+cpp/**/*.vcxproj.filters
+cpp/**/*.vcxproj.user
+cpp/**/*.vsp
