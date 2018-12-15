@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Synchro": {
+      "commandName": "Project",
+      "commandLineArgs": "server 6666 d:\\dev\\tinker\\csharp"
+    }
+  }
+}
