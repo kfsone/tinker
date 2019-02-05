@@ -57,16 +57,21 @@ class FileInfo(object):
     Simple container for file information, specifically the normalized
     path and the size from stat.
     """
+
     def __init__(self, path, stat):
         self.path, self.size = os.path.normpath(path), stat.st_size
+
 
     def __repr__(self):
         return "FileInfo('%s', %d)" % (self.path, self.size)
 
 
-# Used to describe a comparison candidate, which tracks which other
-# candidates it is matching.
+
 class Candidate(object):
+    """
+    Describes a comparison candidate and tracks which other Candidates
+    it has been matched againt, if any.
+    """
 
     def __init__(self, fileinfo):
         self.fileinfo   = fileinfo
@@ -74,9 +79,11 @@ class Candidate(object):
         self.index      = None
         self.candidates = None
 
+
     def init(self, index, candidates):
         self.index      = index
         self.candidates = set(range(len(candidates))) - set((index,))
+
 
     def discount(self, lost, candidates):
         """
@@ -87,6 +94,7 @@ class Candidate(object):
         :param lost: List of indexes we no-longer match,
         :param candidates:  list(Candidate) from which to untrack our matches
         """
+
         self.candidates -= lost
         remove_set = set(self.candidates)
         remove_set.add(self.index)
@@ -94,16 +102,21 @@ class Candidate(object):
             candidates[idx].candidates -= remove_set
 
 
-# -----------------------------------------------------------------------------
-# Helper functions.
+
+# Cross-platform filesystem matching.
 #
 if sys.platform == "win32":
+
     def same_top_level(lhs, rhs):
         """ test if two files are on the same drive. """
+
         return os.path.splitdrive(lhs) == os.path.splitdrive(rhs)
+
 else:
+
     def same_top_level(lhs, rhs):
         """ test if two files are in the same top-level directory. """
+
         if lhs.rfind(os.path.sep) == 0 and rhs.rfind(os.path.sep) == 0:
             return True
         lhs, rhs = lhs.partition(os.path.sep)[1], rhs.partition(os.path.sep)[1]
@@ -112,15 +125,13 @@ else:
 
 def safe_open(path):
     """ If the file can be opened, returns a file handle; otherwise None."""
+
     try:
         return open(path, 'rb')
     except (IOError, PermissionError, FileNotFoundError):
         return None
 
 
-# -----------------------------------------------------------------------------
-# Catalog class.
-#
 class Catalog(object):
     """
     For efficiently producing a list of files in a given set of directory
@@ -150,6 +161,7 @@ class Catalog(object):
         :param threads:   [opt] number of threads to use in the pool,
         :param logger:    [opt] logger to use,
         """
+
         if threads is None:
             threads = os.cpu_count()
 
@@ -164,12 +176,14 @@ class Catalog(object):
         self.files_observed = 0
         self.pool           = Pool(threads)
 
+
     def _get_files(self):
         """
-            Generator: Yields all files from recursively descending all
-            of the paths provided. No overlap check is provided so files
-            may be yielded twice if your paths overlap.
+        Generator: Yields all files from recursively descending all
+        of the paths provided. No overlap check is provided so files
+        may be yielded twice if your paths overlap.
         """
+
         self.files_observed = 0
 
         num_folders = 0
@@ -204,13 +218,16 @@ class Catalog(object):
         if not num_folders:
             self.logger.error("No folders found to scan.")
 
+
         self.logger.debug("=> considered %d files" % self.files_observed)
+
 
     def _get_file_info(self, path):
         """
-            Returns a FileInfo if the file can be stat'd and meets our size
-            constraints.otherwise None.
+        Returns a FileInfo if the file can be stat'd and meets our size
+        constraints.otherwise None.
         """
+
         try:
             stat = os.stat(path)
         except IOError:
@@ -221,22 +238,24 @@ class Catalog(object):
 
         return None
 
+
     def _hash_file(self, info):
         """
-            Returns data used to provide a reasonably high probability of
-            distinguishing distinct files.
+        Returns data used to provide a reasonably high probability of
+        distinguishing distinct files.
 
-            For files < Constants.RAW_READ_BYTES, we just go ahead and read
-            that many bytes; otherwise we use a hashing algorithm on the
-            first Constants.HASH_READ_BYTES of the file.
+        For files < Constants.RAW_READ_BYTES, we just go ahead and read
+        that many bytes; otherwise we use a hashing algorithm on the
+        first Constants.HASH_READ_BYTES of the file.
 
-            We return the info and the discriminating data. For the smaller
-            files, we prefix it with an 'R' (raw); for the larger, we prefix
-            with an 'H' (Hashed) and the size as binary data.
+        We return the info and the discriminating data. For the smaller
+        files, we prefix it with an 'R' (raw); for the larger, we prefix
+        with an 'H' (Hashed) and the size as binary data.
 
-            This further reduces the chances of discriminators or hashes
-            colliding.
+        This further reduces the chances of discriminators or hashes
+        colliding.
         """
+
         infh = safe_open(info.path)
         if infh:
             read_size = min(info.size, Constants.HASH_READ_BYTES)
@@ -248,11 +267,13 @@ class Catalog(object):
                 return info, b'H'+struct.pack("Q", info.size)+hasher.digest()
         return None, None
 
+
     def _get_candidates(self):
         """
-            Yields lists of FileInfos that have been size-matched and then
-            hash (or raw-read) matched efficiently across threads.
+        Yields lists of FileInfos that have been size-matched and then
+        hash (or raw-read) matched efficiently across threads.
         """
+
         total_files     = 0
         size_table      = defaultdict(list)  # {size: list(FileInfo)}
         files_raw       = 0
@@ -272,8 +293,9 @@ class Catalog(object):
                 size_table[fi.size].append(fi)
 
         # Eliminate unique sizes since they can't be duplicates of anything.
-        num_candidates = sum(len(l) for l in size_table.values() if len(l) > 1)
         matched_sizes = (l for l in size_table.values() if len(l) > 1)
+        # since the above was a generator, we have to repeat the test
+        num_candidates = sum(len(l) for l in size_table.values() if len(l) > 1)
 
         self.logger.debug("files:%d, sizes: %d, hashing candidates: %d" % (
                         total_files, len(size_table), num_candidates))
@@ -299,6 +321,7 @@ class Catalog(object):
         # contains more than one entry (ie is not unique)
         yield from (list_fi for list_fi in buckets.values() if len(list_fi) > 1)
 
+
     def _compare_files(self, candidates):
         """
         Yields lists of matching files.
@@ -306,6 +329,7 @@ class Catalog(object):
         :param candidates:  List of FileInfos of the files to be compared,
         :return:            list(FileInfo{2,}) of matched files or empty list,
         """
+
         file_size = candidates[0].size
         self.logger.debug("comparing {src} ({sz:n} bytes) vs {fls}".format(
             src=candidates[0].path, sz=file_size,
@@ -313,7 +337,7 @@ class Catalog(object):
         ))
 
         # Create 'Candidate' objects for each fileinfo, which allows us
-        # to track all the file that are equal to each other as we read.
+        # to track all the files that are equal to each other as we read.
         # Imagine we have four files, which all start with 10k of 0s,
         # after which two of the files have 10k of 255s and the other two
         # have 10k of 1s: For the first 10k, all four files will have
@@ -331,12 +355,13 @@ class Catalog(object):
         # The 'lost' set will be used by each left index to track which
         # candidates just stopped matching with it.
         matched, lost, bytes_read = set(), set(), 0
+
         while bytes_read < file_size:
 
             # Read the next chunk of all active candidates.
             samples = {
                 idx: candidates[idx].fh.read(Constants.READ_CHUNK_SIZE)
-                for idx in range(0, len(candidates))
+                for idx in range(len(candidates))
                 if candidates[idx].candidates
             }
             # If no files were compared, nothing matches.
@@ -349,7 +374,7 @@ class Catalog(object):
             # list after it, so long as neither has been matched this round.
             # So if file 0 matches 3 and 5, we will compare 1 with 2 and 4.
             matched.clear()
-            for left_idx in range(0, len(samples) - 1):
+            for left_idx in range(len(samples) - 1):  # -1: we compare with idx + 1
                 if left_idx not in samples or left_idx in matched:
                     continue
                 lost.clear()
@@ -371,13 +396,14 @@ class Catalog(object):
         # Take each candidate that matched something and build their match
         # into a combination index in the matched set.
         matched.clear()
-        for idx in range(0, len(candidates)):
+        for idx in range(len(candidates)):
             cand = candidates[idx]
             if cand.candidates:
                 matched.add(tuple(sorted([idx] + list(cand.candidates))))
 
         for match_list in matched:
             yield (candidates[idx].fileinfo for idx in match_list)
+
 
     def matching_files(self):
         """
@@ -386,6 +412,7 @@ class Catalog(object):
 
         :return: tuple(size_in_bytes, list(filepaths))
         """
+
         raw_matches, hash_matches = 0, 0
 
         for size_list in self._get_candidates():
