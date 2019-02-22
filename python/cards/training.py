@@ -25,14 +25,17 @@ class Info:
     ROWS = 7
     SPACE = (COLUMNS * SPACING[0], ROWS * SPACING[1])
     BOTTOM_RIGHT = (TOP_LEFT[0] + SPACE[0], TOP_LEFT[1] + SPACE[1])
-    LABEL_OFFSET = (0, 0)
-    LABEL_SIZE = (26, 42)
+    LABEL_OFFSET = (1, 1)
+    LABEL_SIZE = (26, 40)
+
+
+def defaulted_screenshot():
+    return Screenshot(Info.TOP_LEFT, Info.BOTTOM_RIGHT, Info.SPACING, Info.LABEL_OFFSET, Info.LABEL_SIZE)
 
 
 def train_from_default():
     # Construct a screenshot read for this image.
-    scrn = Screenshot(Info.TOP_LEFT, Info.BOTTOM_RIGHT, Info.SPACING, Info.LABEL_OFFSET, Info.LABEL_SIZE)
+    scrn = defaulted_screenshot()
     scrn.load(TRAINING_IMAGE)
-    scrn.map_to_images(TRAINING_DECK)
-    return scrn
-
+    images = scrn.map_to_images(TRAINING_DECK)
+    return images

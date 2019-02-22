@@ -164,6 +164,11 @@ class Table(object):
         move.source.cards[:] = move.source.cards[:-len(move.cards)]
         move.dest.cards += move.cards
         self.moves.append(move)
+
+        # If there are no breaks in continuity, the table is won.
+        if not any(s for s in self.deck if s.cards and s.extent() < len(s.cards)):
+            return True
+
         if move.dest in self.foundations and move.source.empty():
             # When we empty something, check if we just cleared the deck,
             # by checking if all the foundations are now full.

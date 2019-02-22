@@ -1,7 +1,7 @@
 from cards import freecell
 from cards.cards import Cards
 from contextlib import contextmanager
-from cards import scoring
+from cards import freecell, images, scoring, training
 
 import argparse
 import logging
@@ -25,10 +25,6 @@ class TableState(object):
     desirable state (d1[-1] -> d2, d1[-1] -> d3, d2[-1] -> d3 could be better achieved
     by trying d1[-2:] -> d3).
     """
-
-    WINNER = "GOAL"
-    """ Fake cardstr we'll use for the cleared table. """
-
 
     def __init__(self, score, move, cards_to_play=Cards.COUNT, parent=None):
         self.score = score
@@ -196,7 +192,7 @@ class Game(object):
 
         # Instead of a table state, we just use the word "WIN".
         winning_state = TableState(table.score(), move, 0, state)
-        self.states[TableState.WINNER] = winning_state
+        self.states[table.cardstr] = winning_state
         self.winner = winning_state
         self.winning_depth = new_depth
 
@@ -249,10 +245,14 @@ class Game(object):
 
 
 def test_setup(filename=None, max_moves=200, scoring=scoring.score_counts, logger=logging):
-    from cards import training
+    filename = filename or training.TRAINING_DECK
 
-    scrn = training.train_from_default()
-    deck = scrn.generate_deck(filename=filename)
+    # Find out what cards are supposed to look like
+    card_images = training.train_from_default()
+
+    screenshot = training.defaulted_screenshot()
+    screenshot.load(filename)
+    deck = screenshot.generate_deck(card_images)
 
     return Game(deck, max_moves=max_moves, scoring=scoring, logger=logger)
 
@@ -261,8 +261,6 @@ def parse_args(argv):
 
     parser = argparse.ArgumentParser("Solve Freecell deck")
 
-    binary_file = argparse.FileType('rb')
-
     parser.add_argument("--verbose",    "-v",   dest="verbose",     action="count",         default=0,
             help="Increase logging verbosity.")
     parser.add_argument("--max-moves",  "-M",   dest="max_moves",   type=int,               default=200,
@@ -270,7 +268,7 @@ def parse_args(argv):
     parser.add_argument("--step",               dest="step",        action="store_true",    default=False,
             help="Walk the user thru the winning steps interactively on completion.")
 
-    parser.add_argument("filename",             nargs='?',          type=binary_file,       default=None,
+    parser.add_argument("filename",             nargs='?',          type=str,               default=None,
             help="Specify filename to read deck from. Default: Use the training deck (for demonstration).")
 
     return parser.parse_args(argv)
