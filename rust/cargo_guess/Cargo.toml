@@ -1,0 +1,8 @@
+[package]
+name = "cargo_guess"
+version = "0.1.0"
+authors = ["Oliver Smith <oliver@kfs.org>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.6"
