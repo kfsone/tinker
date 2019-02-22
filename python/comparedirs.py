@@ -24,10 +24,13 @@ class FileInfo(object):
 class DirInfo(object):
     def __init__(self):
         # List of FileInfos in this directory
-        self.files   = []
+        self.files         = set()
 
-        # dict(dirpath: [(left_file_path, right_file_path) that matched])
-        self.matches = defaultdict(list)
+        # filename -> set(match folders) where size, hash and name matched
+        self.name_matches  = {}
+
+        # filename -> set(FileInfo) where size and hash matched
+        self.hash_matches  = {}
 
 
 class Comparison(object):
@@ -60,11 +63,12 @@ class Comparison(object):
         folders, files, sizes = self.folders, self.files, self.sizes
 
         for file_path, mtime, size in walk(paths, excludes):
+            file_path = file_path.lower()
             file_info = FileInfo(file_path, mtime, size)
             files[file_path] = file_info
 
             if size > 0:
-                folders[dirname(file_path)].files.append(file_info)
+                folders[dirname(file_path)].files.add(file_info)
                 sizes[size].append(file_info)
 
         # Only sizes with > 1 file have anything worth comparing
@@ -83,7 +87,7 @@ class Comparison(object):
                 db.sync()
 
 
-    def match(self, readcallback=None, filecallback=None) -> Tuple[int, int]:
+    def match(self, filecallback=None, reverse: bool=False) -> Tuple[int, int]:
         """
         Retrieves hashes for all the files found to populate self.matches
 
@@ -93,32 +97,53 @@ class Comparison(object):
             raise ValueError("No files found (did you call scan?)")
 
         with shelve.open(self.DB) as db:
-            for size, files in sorted(self.sizes.items()):
-                chunk_size = size if not readcallback else 8 * 4096
+            for size, files in sorted(self.sizes.items(), reverse=reverse):
                 for file_info in files:
                     if file_info.hash:
-                        if readcallback:
-                            readcallback(file_info.path, size, size, 0)
                         if filecallback:
-                            filecallback(file_info)
+                            filecallback(file_info, size)
                         continue
                     dbinf = db.get(file_info.path, None)
                     if not dbinf or dbinf.mtime != file_info.mtime or dbinf.size != size:
-                        file_info.hash = get_hash(file_info.path, size, readcallback, chunk_size)
+                        if filecallback:
+                            filecallback(file_info, 0)
+                        file_info.hash = get_hash(file_info.path, size, size)
                         db[file_info.path] = file_info
                         self.cache_miss += 1
                     else:
                         file_info.hash = dbinf.hash
-                        if readcallback:
-                            readcallback(file_info.path, size, size, 0)
                         self.cache_hit  += 1
                     self.hashes[file_info.hash].append(file_info)
                     if filecallback:
-                        filecallback(file_info)
+                        filecallback(file_info, size)
 
         self.matches = {hash_str: infos for hash_str, infos in self.hashes.items() if len(infos) > 1}
         
         return sum(len(h) for h in self.matches.values()), len(self.matches)
+
+
+    def classify(self):
+        """ Walks the tree and determines percentages of match between folders """
+        from os.path import basename, dirname
+        if not self.matches:
+            raise ValueError("No matches found (did you call match?)")
+
+        for hash_str, files in self.matches.items():
+            # Build a set of discrete names and the folders they appear in
+            names = defaultdict(set)
+
+            # Build a list of distinct file names and the hashes that match them,
+            # so we can determine files that have the same content and name,
+            # but also cross-link the hash matches between folders.
+            for file_path in files:
+                file_name, dir_path = basename(file_path), dirname(file_path)
+                names[file_name].add(dir_path)
+                self.folders[dir_path].hash_matches[file_name].add(files)   # simply link to the full match
+
+            for name, folders in names:
+                for folder in folders:
+                    self.folders[folder].name_matches[name] = folders - folder
+
 
 
 def main(paths: PathList, excludes: PathList = None):

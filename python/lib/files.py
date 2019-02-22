@@ -38,8 +38,12 @@ def walk(paths: PathList, excludes: PathList = None) -> Iterable[Tuple[str, int,
             print(e)
 
 
-def get_hash(file_path: str, size: int, callback=None, chunk_size=4*4096, checksummer=hashlib.md5) -> str:
+def get_hash(file_path: str, size: int, chunk_size=None, checksummer=hashlib.md5) -> str:
     """ Efficiently get the hash for a given file, prefixed with the size. """
+    # One-shot reads if chunk_size is <= 0
+    if not chunk_size or chunk_size < 0:
+        chunk_size = size
+
     with open(file_path, "rb") as fh:
         with mmap.mmap(fh.fileno(), size, access=ACCESS_READ) as mm:
             checksum = checksummer()
@@ -47,7 +51,5 @@ def get_hash(file_path: str, size: int, callback=None, chunk_size=4*4096, checks
                 remaining = size - start
                 chunk = min(remaining, chunk_size)
                 checksum.update(mm[start:start+chunk])
-                if callback:
-                    callback(file_path, size, chunk, remaining - chunk)
 
             return "%s:%s" % (size, checksum.hexdigest())
