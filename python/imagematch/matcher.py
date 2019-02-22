@@ -83,9 +83,9 @@ class ImageInfo(object):
         """
         Yields field paths from 'path' that match known image extensions.
 
-        :param  path:       Path to search (default %s)
-        :param  recurse:    Set True to recursively descend sub-folders (default %s)
-        """ % (".", False)
+        :param  path:       Path to search (default '.')
+        :param  recurse:    Set True to recursively descend sub-folders (default False)
+        """
 
         extensions = tuple(set(Constants.DEFAULT_EXTENSIONS))
 
@@ -138,8 +138,8 @@ class ImageInfo(object):
         the class's currently tracked image list (see ImageInfo.Images).
 
         :param threshold: 0.<=threshold<=1.0 only hamming distances <= threshold
-                          will be considered a match (default %f).
-        """ % Constants.DEFAULT_DHASH_THRESHOLD
+                          will be considered a match (default 25).
+        """
 
         # Calculate the dHash of my own image.
         if self.dhash is None:
