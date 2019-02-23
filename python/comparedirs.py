@@ -27,10 +27,10 @@ class DirInfo(object):
         self.files         = set()
 
         # filename -> set(match folders) where size, hash and name matched
-        self.name_matches  = {}
+        self.name_matches  = defaultdict(set)
 
-        # filename -> set(FileInfo) where size and hash matched
-        self.hash_matches  = {}
+        # filename -> list(FileInfo) where size and hash matched
+        self.hash_matches  = defaultdict(list)
 
 
 class Comparison(object):
@@ -135,15 +135,14 @@ class Comparison(object):
             # Build a list of distinct file names and the hashes that match them,
             # so we can determine files that have the same content and name,
             # but also cross-link the hash matches between folders.
-            for file_path in files:
-                file_name, dir_path = basename(file_path), dirname(file_path)
+            for fileinfo in files:
+                file_name, dir_path = basename(fileinfo.path), dirname(fileinfo.path)
                 names[file_name].add(dir_path)
-                self.folders[dir_path].hash_matches[file_name].add(files)   # simply link to the full match
+                self.folders[dir_path].hash_matches[file_name].extend(files)   # simply link to the full match
 
-            for name, folders in names:
+            for name, folders in names.items():
                 for folder in folders:
-                    self.folders[folder].name_matches[name] = folders - folder
-
+                    self.folders[folder].name_matches[name] = folders - {folder,}
 
 
 def main(paths: PathList, excludes: PathList = None):
