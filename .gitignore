@@ -25,4 +25,6 @@ __pycache__/
 /csharp/**/bin/
 
 # Project-specific ignores
+/golang/**/go.sum
+/golang/**/*.exe
 
