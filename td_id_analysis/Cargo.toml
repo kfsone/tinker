@@ -1,0 +1,12 @@
+[package]
+name = "td_id_analysis"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+[dependencies.rusqlite]
+version = "0.31.0"
+features = ["bundled"]

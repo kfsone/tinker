@@ -5,6 +5,8 @@ __pycache__/
 .idea/
 .vs/
 .vscode/
+target/
+**/target/
 
 # Python-specific ignores
 /python/*.spec

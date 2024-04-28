@@ -1,5 +1,6 @@
 [workspace]
-version = "2"
+resolver = "2"
 
 members = [
+	"td_id_analysis",
 ]
