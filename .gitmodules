@@ -1,3 +1,0 @@
-[submodule "cpp/SynchrO/Libraries/clsocket"]
-	path = cpp/SynchrO/Libraries/clsocket
-	url = https://github.com/DFHack/clsocket
