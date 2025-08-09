@@ -1,0 +1,6 @@
+Hero *Oliver*
+{
+  mName = "Oliver"
+  mArchetype = Archetype::BARD
+  mCost = 100
+}

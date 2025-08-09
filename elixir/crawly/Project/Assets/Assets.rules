@@ -1,0 +1,65 @@
+# <- comment
+
+# COMMMENT <- /#.*/  # doesn't consume the \n
+#
+# rules <- (expression | rule) *
+#
+#  expression <- conditional | exclude | include
+#   conditional <- if_expression elseif_expression* else_expression?
+#    if_expression <- "if" condition rules_block
+#    elseif_expression <- "elseif" condition rules_block
+#    else <- "else" condition rules_block
+#     condition <- '(' predicate ')' | predicate
+#      predicate <- VARIABLE OP STRING | VARIABLE
+#     rules_block <- '{' rules '}'
+#   exclude <- "exclude" pathexpr NL
+#   include <- "include" pathexpr NL
+#
+#  rule <- asset_type argument* assetpathexpr
+#   asset_type <- /[a-z][a-z0-9_-]+/  # we don't validate
+#   argument <- /"-(.*)?"/ | /-\S+/   # "-..." or -...
+#
+#  pathexpr <- filepart (SEPARATOR filepart)*
+#   filepart <- WILDCARD pathwild+ | PATHNAME wildpath+ | pathwild | wildpath | GLOBSTAR | WILDCARD
+#    pathwild <- PATHNAME WILDCARD
+#    wildpath <- WILDCARD PATHNAME
+#
+#  # the only difference is we check these for valid extensions in code.
+#  assetpathexpr <- pathexpr
+#
+#  # assetpathexprs cannot end with a wildcard extension, e.g. allimages.*
+#
+# VARIABLE <- /^\$\w+$/
+# STRING <- /"(\\[^\r\n]|[^\\\"\r\n])*"/
+# OP <- "=" | "!="
+# SEPARATOR <- '/'
+# WILDCARD <- '*'
+# PATHNAME <- /[A-Za-z0-9+-_.& ]+/
+# GLOBSTAR <- '**'
+
+if $TARGET = "macosx" { }  # empty block is ok
+if ($TARGET != "apple") { }
+
+# the contents of any .rules files applies only to the files and directories below it in
+# the directory tree.
+# precedence is always reverse depth without regard to specificity.
+# If "/A.rules" says "include a/b/c/d/e/f/hello.jpg" but /a/b/c/d/e/X.rules says
+# exclude *.jpg and no lower rules match, then hello.jpg is excluded.
+
+exclude Debug*  # don't wild match anything in this directory starting with "Debug"
+include Debugger # but don't exclude a directory called "Debugger"
+# exclude **/Debug*  # if uncommented, would hide the Debugger include again
+
+# by default all textures are bitmaps
+texture --use=bitmap **/*.tga
+texture --use=bitmap **/*.png
+
+# if the name ends with _nm then it's a bumpmap
+texture --use=normal **/*_bm.tga  # rules are NOT cumulative, you only ever apply one
+texture --use=normal **/*_bm.png
+
+def --tag=hero **/*_Hero.def
+def --tag=char **/*_Char.def
+def --tag=hero --tag=char **/*_Char_Hero.def
+def --tag=hero --tag=char **/*_Hero_Char.def
+

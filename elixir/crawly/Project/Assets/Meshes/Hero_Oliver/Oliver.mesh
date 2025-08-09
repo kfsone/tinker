@@ -1,0 +1,11 @@
+; first section lists the attributes and shading groups from which
+; we can deduce shadegraphs. These correspond to .shadegraph files
+shading_groups
+Hero_Oliver_ORM_instance_mat
+Hero_Oliver_Weapon_ORM_instance_mat
+
+attributes
+TEXCOORD1
+
+influence_objects
+... ; nothing beyond here matters much to file processing ; ...

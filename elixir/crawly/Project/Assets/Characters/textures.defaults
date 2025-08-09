@@ -1,0 +1,10 @@
+; ini format file that specifies global or per-platform overrides in a key=value form
+; these are defaults:
+max-width = 1024
+
+[iphone]
+max-width = 512
+
+[android]
+max-width = 512
+

@@ -1,0 +1,14 @@
+# The top level rule says to not include anything in the ^/Debug*/ directories,
+# but that only applies to asset-matching, it does not stop us finding .rules files
+
+if $RELEASE_TYPE = "staging"
+{
+  include *.uiml  # allow the uiml elements to be matched
+  include *.response # allow anything ending with .response to match again
+}
+
+uiml *.uiml  # no parameter overrides
+texture *.tga  # any non-excluded tga's present will be used as stand-alone textures with no parameters
+
+# although we 'include'd *.response, all that did was lift the filter. since there is no rule
+# for *.response, they will still be ignored.

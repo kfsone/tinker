@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ShadeGraph>
+	<TextureBindings>
+		<Texture Name="Blade" Filename="Oliver_Weapon_Blade.tga">
+		</Texture>
+	</TextureBindings>
+</Shadegraph>
+<!-- that's enough for our purposes -->
