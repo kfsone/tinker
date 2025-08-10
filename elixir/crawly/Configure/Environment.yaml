@@ -1,0 +1,67 @@
+# Absolute path expressions are relative to the workspace directory.
+
+# Templated paths interpolation syntax and our "workspace-relative"
+# '^' syntax to define parametric paths in a way that can generate
+# project/target/etc specific paths from a single definition.
+#
+# '^/' = the workspace root (e.g. ~/Development/Project
+# 
+Paths:
+  # These are universal and are not dependent on any parameters
+  ANCHOR:					"/.Workspace"
+  DEVELOPMENT:		"/Development/Trunk"
+  DOCUMENTATION:	"/Documentation"
+  PROJECTS:				"/"
+  TOOLS:					"/Tools"
+  CONVERTERS:			"^TOOLS/Converters"
+  SCRIPTS:				"^TOOLS/Scripts"
+
+  # These are variable based on project/target/etc
+                    # Path to the top of a given project's data/asset directories.
+  Project:          "^PROJECTS/{{.project}}"
+                    # The asset directory tree for a specific project.
+  Assets:           "^Project/Assets"
+                    # Location of the various platform build directories for a specific project.
+  Builds:           "^Project/Build"
+                    # Build outputs for a specific project/target combination.
+  Artifacts:        "^Builds/{{.targetPath}}"
+                    # Distributable asset binaries for a specific project/target combination.
+  Data:             "^Artifacts/Data"
+                    # Where the asset pipeline keeps data about the work it has done/needs to do.
+  Metadata:         "^Artifacts/Cache"
+                    # Application (as opposed to game) system-specific data like icons, plists, manifests, etc.
+  Localization:     "^Project/Localization"
+                    # Location of the engine-specific compiled binaries that transform various asset types.
+  Converters:       "^ConverterTools/{{.platformPath}}"
+
+
+# Outlines the currently projects and their paths
+Projects:
+  - Name: Demos             # This is not present in the sample
+    Path: ^PROJECTS/Demos   # The default is: ^PROJECTS/#{name}, so this is optional
+
+  - Name: Project           # Our 'Project' directory.
+    # Path: ^PROJECTS/#{name}
+
+Engine:
+  AssetFormats:
+    DefFile:
+      Version: 8
+      Binary:  true
+
+    Mesh:
+      Version: 12
+      Compress: false
+      Encrypt: false
+
+    Shader:
+      Version: 250
+      Compress: false
+      Encrypt: false
+
+    Texture:
+      Version: 21
+
+    UIML:
+      Version: 2
+      Binary: true
