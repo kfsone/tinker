@@ -34,6 +34,14 @@ Paths:
   Converters:       "^ConverterTools/{{.platformPath}}"
 
 
+Files:
+  Rules:
+        # The name they'll all end with
+    Extension:      .rules
+        # The one to read before any others in a given directory.
+    Primary:        Assets.rules
+
+
 # Outlines the currently projects and their paths
 Projects:
   - Name: Demos             # This is not present in the sample
