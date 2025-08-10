@@ -1,5 +1,21 @@
-Let's see if I can write something to crawl the Project directory in Elixir.
+# Crawly
 
-- Files contain explanatory comments,
-- .tga/.png files just contain the word "FAKE"
-- Project/Assets.rules contains a peg-style description of the .rules grammar
+**TODO: Add description**
+
+## Installation
+
+If [available in Hex](https://hex.pm/docs/publish), the package can be installed
+by adding `crawly` to your list of dependencies in `mix.exs`:
+
+```elixir
+def deps do
+  [
+    {:crawly, "~> 0.1.0"}
+  ]
+end
+```
+
+Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
+and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
+be found at <https://hexdocs.pm/crawly>.
+
