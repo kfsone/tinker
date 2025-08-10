@@ -8,13 +8,12 @@
 # 
 Paths:
   # These are universal and are not dependent on any parameters
-  ANCHOR:					"/.Workspace"
-  DEVELOPMENT:		"/Development/Trunk"
-  DOCUMENTATION:	"/Documentation"
-  PROJECTS:				"/"
-  TOOLS:					"/Tools"
-  CONVERTERS:			"^TOOLS/Converters"
-  SCRIPTS:				"^TOOLS/Scripts"
+  DEVELOPMENT:      "/Development/Trunk"
+  DOCUMENTATION:    "/Documentation"
+  PROJECTS:         "/"
+  TOOLS:            "/Tools"
+  CONVERTERS:       "^TOOLS/Converters"
+  SCRIPTS:          "^TOOLS/Scripts"
 
   # These are variable based on project/target/etc
                     # Path to the top of a given project's data/asset directories.
@@ -46,18 +45,18 @@ Projects:
 Engine:
   AssetFormats:
     DefFile:
-      Version: 8
-      Binary:  true
+      Version:  8
+      Binary:   true
 
     Mesh:
-      Version: 12
+      Version:  12
       Compress: false
-      Encrypt: false
+      Encrypt:  false
 
     Shader:
-      Version: 250
+      Version:  250
       Compress: false
-      Encrypt: false
+      Encrypt:  false
 
     Texture:
       Version: 21
