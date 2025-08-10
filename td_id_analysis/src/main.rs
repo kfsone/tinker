@@ -1,3 +1,4 @@
+extern crate bit_vec;
 extern crate rusqlite;      // for sqlite access
 
 use rusqlite::{Connection, Result as SqlResult};
@@ -97,9 +98,42 @@ fn main() -> Result<(), String> {
     let mut most_compact = 128;
 
     let low_seed = ids.len() as u64 / 8;  // Start with a seed that would require 8 ids per bucket
-    let max_seed = (2 * ids.len()+1).next_power_of_two() as u64;
+    let max_seed = (3 * ids.len()+1).next_power_of_two() as u64;
 
     println!("exploring {low_seed}-{max_seed}");
+
+//    let first_thread = std::thread::spawn(|| {
+    let mut winner: u64 = 0;
+        for seed in low_seed..=(max_seed*4) {
+            let mut space = bit_vec::BitVec::from_elem(seed as usize, false);
+            let mut unique = true;
+            for id in &ids {
+                let bit = id % seed;
+                if space.get(bit as usize).unwrap() {
+                    // bit is already set, collision
+                    unique = false;
+                    break
+                }
+                space.set(bit as usize, true);
+            }
+            if !unique {
+                if seed % 10000 == 0 {
+                    print!("...{}\r", seed);
+                    use std::io::Write;
+                    std::io::stdout().flush().unwrap();
+                }
+                continue
+            }
+            println!("found unique spacing: {}", seed);
+            winner = seed;
+            break;
+        }
+
+    if winner != 0 {
+        return Ok(());
+    }
+    // });
+    // first_thread.join().unwrap();
 
     for seed in low_seed..=max_seed {
         let dist = analyze_distribution(&ids, seed);
@@ -118,6 +152,8 @@ fn main() -> Result<(), String> {
             }
         }
     }
+
+    println!("finished: most_compact == {}", most_compact);
 
     Ok(())
 }
